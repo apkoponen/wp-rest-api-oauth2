@@ -5,7 +5,7 @@ Requires at least: 4.4.1
 Tested up to: 4.4.1
 Stable tag: 1.0.0
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 This project is a rewrite of WP OAuth Server for WordPress. OAuth2 Server is built on core WP native functionality to allow Single Sign On and 3rd Party Application Access. 
 
