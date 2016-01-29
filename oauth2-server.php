@@ -3,7 +3,7 @@
  * Plugin Name: OAuth2 Server
  * Plugin URI: https://wp-oauth.com
  * Description: Simple OAuth2 Server for WordPress.
- * Version: 1.0.0
+ * Version: 1.0.0d
  * Author: Justin Greer
  * Author URIL http://justin-greer.com
  * License: GPL3
