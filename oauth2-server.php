@@ -24,6 +24,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /** Load what needs to be loaded before anything */
 require_once( dirname( __FILE__ ) . '/includes/filters.php');
+
 add_filter( 'template_redirect', 'oauth2_server_intercept', 1);
 
 /**
@@ -59,20 +60,9 @@ function oauth2_server_intercept() {
   
   foreach( $qvars as $var ){
     if ( $wp_query->get( $var ) ){
-
-      // Check for OAuth2 Server Routes
-      // This may be a bit of overkill but we really only want selected routes to 
-      // come through the server.
-      // 
-      // We may be able to simply pass the routes though to the server and let it return 
-      // an unknown route error message.
-      $routes = apply_filters('oauth2_server_routes', array('authorize','token'));
-      if( in_array($wp_query->get( $var ), $routes) ){
-        
-        // Include the main OAuth2 Server API
-        require_once( dirname(__FILE__) . '/includes/class.oauth2-server.php');
-        $server = new OAuth2_Server();
-      }
+      // Include the main OAuth2 Server API
+      require_once( dirname(__FILE__) . '/includes/class-oauth2-server.php');
+      $server = new OAuth2_Server();
     }
   }
 }

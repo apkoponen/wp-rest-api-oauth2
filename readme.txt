@@ -13,6 +13,16 @@ This project is a rewrite of WP OAuth Server for WordPress. OAuth2 Server is bui
 
 UNDER DEVELOPMENT
 
+TLS/SSL Support
+The website/server should support TLS. Implementations MAY also support additional transport-layer security mechanisms 
+that meet their security requirements. https://tools.ietf.org/html/rfc6749#section-1.6.
+
+Requests to the authorization endpoint REQUIRE TLS/SSL connections
+
+Error Messages
+
+* "unknown_route" is given when the route provided in the request is not requested but the OAuth2 server was called.
+
 
 A few notes about the sections above:
 
