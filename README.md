@@ -15,6 +15,9 @@ you will be added to the list of collaborators.
 Install a fresh copy of of WordPress and clone down the repo into `/wp-contents/plugins`. You will
 also need [WP API](https://github.com/WP-API/WP-API/).
 
+Feature branches should be prefixed with `feature` and branches that fix should be prefixed with `fix`. 
+For example, a feature branch that implants WP_CLI could be named `feature-wpcli`.
+
 ## Development Guidelines
 
 All development will follow the [WordPress coding standard](https://codex.wordpress.org/WordPress_Coding_Standards).
