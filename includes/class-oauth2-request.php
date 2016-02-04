@@ -51,15 +51,23 @@ class OAuth2_Request {
       }
     }
 
+    $responseType = self::getResponseType( $request );
+
+    print_r( $responseType); exit;
+
     // Always default to returning false.
     return false;
   }
 
   /**
-   * The route will be the first query in the list.
-   * @return String the route being called
+   * [getResponseType description]
+   * @param  [type] $request [description]
+   * @return [type]          [description]
    */
-  function checkToken() {
-    
+  static function getResponseType( $request ) {
+    if(!isset($request['request']['response_type']))
+      return false;
+
+    return $request['request']['response_type'];
   }
 }

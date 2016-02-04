@@ -1,29 +1,21 @@
 <?php
 /**
- * Plugin Name: OAuth2 Server
- * Plugin URI: https://wp-oauth.com
- * Description: Simple OAuth2 Server for WordPress.
- * Version: 1.0.0d
- * Author: Justin Greer
- * Author URIL http://justin-greer.com
+ * Plugin Name: WP REST OAuth2 Server
+ * Plugin URI: http://rest.wp-oauth.com
+ * Description: OAuth2 Flow for providing authorization access to WordPress REST API.
+ * Version: 1.0.0
+ * Author: justingreerbbi, ap.koponen
+ * Requires at least: 4.4
  * License: GPL3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Domain Path: /languages
  * Text Domain: oauth2-server
- *
- * OAuth2 Server is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with OAuth2 Server.
  */
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /** Load what needs to be loaded before anything */
-require_once( dirname( __FILE__ ) . '/includes/filters.php');
+require_once( dirname( __FILE__ ) . '/includes/filters.php' );
 
 add_filter( 'template_redirect', 'oauth2_server_intercept', 1);
 

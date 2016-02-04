@@ -1,127 +1,20 @@
-=== OAuth2 Server ===
-Contributors: justingreerbbi
-Tags: OAuth, OAuth2, OAuth2 Server, OAuth2 Provider, Single Sign On, Application Passwords
-Requires at least: 4.4.1
-Tested up to: 4.4.1
-Stable tag: 1.0.0
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-3.0.html
+# [WP REST API - OAuth 2.0 Server](http://rest.wp-oauth.com/)
 
-This project is a rewrite of WP OAuth Server for WordPress. OAuth2 Server is built on core WP native functionality to allow Single Sign On and 3rd Party Application Access. 
+OAuth2 Flow for providing authorization access to WordPress REST API.
 
-== Description ==
+This plugin only supports WordPress >= 4.4.
 
-UNDER DEVELOPMENT
+## Get Involved
 
+If you are interested in getting involved with the project, fork the repo, create a feature branch
+and do a pull request when you are ready to commit. All pull requests are discussed and if approved
+you will be added to the list of collaborators.
 
-A few notes about the sections above:
+## Development
 
-*   "Contributors" is a comma separated list of wordpress.org usernames
-*   "Tags" is a comma separated list of tags that apply to the plugin
-*   "Requires at least" is the lowest version that the plugin will work on
-*   "Tested up to" is the highest version that you've *successfully used to test the plugin*. Note that it might work on
-higher versions... this is just the highest one you've verified.
-*   Stable tag should indicate the Subversion "tag" of the latest stable version, or "trunk," if you use `/trunk/` for
-stable.
+Install a fresh copy of of WordPress and clone down the repo into `/wp-contents/plugins`. You will
+also need [WP API](https://github.com/WP-API/WP-API/).
 
-    Note that the `readme.txt` of the stable tag is the one that is considered the defining one for the plugin, so
-if the `/trunk/readme.txt` file says that the stable tag is `4.3`, then it is `/tags/4.3/readme.txt` that'll be used
-for displaying information about the plugin.  In this situation, the only thing considered from the trunk `readme.txt`
-is the stable tag pointer.  Thus, if you develop in trunk, you can update the trunk `readme.txt` to reflect changes in
-your in-development version, without having that information incorrectly disclosed about the current stable version
-that lacks those changes -- as long as the trunk's `readme.txt` points to the correct stable tag.
+## Development Guidelines
 
-    If no stable tag is provided, it is assumed that trunk is stable, but you should specify "trunk" if that's where
-you put the stable version, in order to eliminate any doubt.
-
-== Installation ==
-
-This section describes how to install the plugin and get it working.
-
-e.g.
-
-1. Upload the plugin files to the `/wp-content/plugins/plugin-name` directory, or install the plugin through the WordPress plugins screen directly.
-1. Activate the plugin through the 'Plugins' screen in WordPress
-1. Use the Settings->Plugin Name screen to configure the plugin
-1. (Make your instructions match the desired user flow for activating and installing your plugin. Include any steps that might be needed for explanatory purposes)
-
-
-== Frequently Asked Questions ==
-
-= A question that someone might have =
-
-An answer to that question.
-
-= What about foo bar? =
-
-Answer to foo bar dilemma.
-
-== Screenshots ==
-
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets 
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png` 
-(or jpg, jpeg, gif).
-2. This is the second screen shot
-
-== Changelog ==
-
-= 1.0 =
-* A change since the previous version.
-* Another change.
-
-= 0.5 =
-* List versions from most recent at top to oldest at bottom.
-
-== Upgrade Notice ==
-
-= 1.0 =
-Upgrade notices describe the reason a user should upgrade.  No more than 300 characters.
-
-= 0.5 =
-This version fixes a security related bug.  Upgrade immediately.
-
-== Arbitrary section ==
-
-You may provide arbitrary sections, in the same format as the ones above.  This may be of use for extremely complicated
-plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
-"installation."  Arbitrary sections will be shown below the built-in sections outlined above.
-
-== A brief Markdown Example ==
-
-Ordered list:
-
-1. Some feature
-1. Another feature
-1. Something else about the plugin
-
-Unordered list:
-
-* something
-* something else
-* third thing
-
-Here's a link to [WordPress](http://wordpress.org/ "Your favorite software") and one to [Markdown's Syntax Documentation][markdown syntax].
-Titles are optional, naturally.
-
-[markdown syntax]: http://daringfireball.net/projects/markdown/syntax
-            "Markdown is what the parser uses to process much of the readme file"
-
-Markdown uses email style notation for blockquotes and I've been told:
-> Asterisks for *emphasis*. Double it up  for **strong**.
-
-`<?php code(); // goes in backticks ?>`
-
-README
-
-Developer Note
-
-* Query Variables are controlled in filter oauth2_server_qvars and default is "oauth2". This can be extended to include 
-.well-known for openID as an extension.
-
-* Routes will be known as the parameter called against the main query. An example of a route would be 
-"authorize" or "token". These are core routes and are called by oauth2?={route}. (/oauth2?=authorize).
-
-All routes for OAuth2 Server are run through a filter to allow for extendability. Even core routes can be removed
-but may interfere with core functionality. Removing core routes should be done with extreme caution and only in a 
-development environment to test before pushing to a live server.
+All development will follow the [WordPress coding standard](https://codex.wordpress.org/WordPress_Coding_Standards).
