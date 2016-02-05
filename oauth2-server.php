@@ -11,3 +11,17 @@
  */
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
+
+add_action( 'rest_api_inti', 'oauth2_register_rest_routes' );
+function oauth2_register_rest_routes(){
+
+	register_rest_route( 'oauth2', '/authorize', array(
+			'methods' => 'GET',
+			'callback' => 'my_awesome_func',
+	) );
+
+	register_rest_route( 'oauth2', '/authorize', array(
+			'methods' => 'GET',
+			'callback' => 'my_awesome_func',
+	) );
+}
