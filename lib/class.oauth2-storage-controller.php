@@ -18,4 +18,24 @@ class OAuth2_Storage_Controller extends OAuth2_Rest_Server {
     return true;
   }
 
+  /**
+   * Generates a token 
+   * @param  integer $chars The length of the token in chars
+   * @return [type]         [description]
+   */
+  static function generate_token( $chars = 32 ){
+    return wp_generate_password( $chars, false );
+  }
+
+  /**
+   * Sets the Auth code in the database
+   */
+  function setAuthCode ( $userData = null ) {
+    $code = self::generate_token();
+    $expires = strtotime( '+30 second' );
+    update_option( 'oauth2_code_' . $code, $userData );
+
+    return true;
+  }
+
 }

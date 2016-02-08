@@ -58,17 +58,19 @@ class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
       exit; 
     }
 
+    /**
+     * Prepare start the code prep
+     * @var OAuth2_Storage_Controller
+     */
     $storage = new OAuth2_Storage_Controller();
-    $stprage
-    // Setup the auth code and pass it back to the user
-    print_r($user_id);
-    exit;
-    // If the user is logged in, begin the process of creating a auth code and returning it back to the user.
+    $storage->setAuthCode( array(
+      'client_id' => $request[ 'client_id' ],
+      'user_id' => $user_id,
+      'redirect_uri' => '',
+      'scopes' => array()
+    ) );
 
-    // if we made it this far, everything has checked out and we can begin our logged in check and authorize process.
-    $data = array( 
-      'code' => '123123123' 
-      );
+    // Ensure that the option is in correct
 
     // If the state is not null, we need to return is as well
     if ( ! is_null( self::$state ) ) {
