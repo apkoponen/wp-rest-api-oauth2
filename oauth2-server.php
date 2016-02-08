@@ -66,6 +66,8 @@ class OAuth2_Rest_Server {
    *
    */
   static function register_storage() {
+	require_once dirname( __FILE__ ) . '/lib/class.oauth2-admin.php';
+
 	register_post_type( 'oauth2_consumer', array(
 		'labels'			 => array(
 			'name'			 => __( 'Consumers', 'wp-oauth2' ),
