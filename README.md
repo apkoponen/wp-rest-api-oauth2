@@ -21,3 +21,7 @@ For example, a feature branch that implants WP_CLI could be named `feature-wpcli
 ## Development Guidelines
 
 All development will follow the [WordPress coding standard](https://codex.wordpress.org/WordPress_Coding_Standards).
+
+* Function naming convention - All functions will need to be prefixed properly. Function prefix is `oauth2_`.
+* To keep in-line with WP core ideals, functions should be broke out using wrappers if necessary. More code is drowned 
+out by cleaner and more scalable code.
