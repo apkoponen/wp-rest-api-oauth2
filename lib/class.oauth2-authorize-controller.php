@@ -58,6 +58,8 @@ class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
       exit; 
     }
 
+    $storage = new OAuth2_Storage_Controller();
+    $stprage
     // Setup the auth code and pass it back to the user
     print_r($user_id);
     exit;
