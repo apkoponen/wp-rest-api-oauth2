@@ -48,9 +48,9 @@ class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
       return new OAuth2_Response_Controller( $error );
     }
 
-    print_r(wp_get_current_user()); exit;
-    // Check to see if the user is logged in. 
-    if ( ! is_user_logged_in() ) {
+    $user_id = apply_filters( 'determine_current_user', false );
+
+    if ( ! $user_id ) {
       global $wp;
       $current_url = add_query_arg( $wp->query_string . http_build_query( $request->get_params() ), '', site_url( $wp->request ) );
       wp_redirect( wp_login_url( $current_url ) ); 
@@ -58,6 +58,9 @@ class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
       exit; 
     }
 
+    // Setup the auth code and pass it back to the user
+    print_r($user_id);
+    exit;
     // If the user is logged in, begin the process of creating a auth code and returning it back to the user.
 
     // if we made it this far, everything has checked out and we can begin our logged in check and authorize process.
