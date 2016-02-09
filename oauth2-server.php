@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 add_action( 'rest_api_init', array( 'OAuth2_Rest_Server', 'register_routes' ) );
 add_action( 'init', array( 'OAuth2_Rest_Server', 'register_storage' ) );
+add_filter( 'rest_index', array( 'OAuth2_Rest_Server', 'add_routes_to_index' ) );
 
 /**
  * OAuth2 Rest Server Main Class
@@ -115,5 +116,24 @@ class OAuth2_Rest_Server {
 		'delete_with_user'	 => true,
 		'query_var'			 => false,
 	) );
+  }
+  
+  /* Register routes to authentication
+   *
+   * @param object $response_object WP_REST_Response Object
+   * @return object Filtered WP_REST_Response object
+   */
+
+  static function add_routes_to_index( $response_object ) {
+	if ( empty( $response_object->data[ 'authentication' ] ) ) {
+	  $response_object->data[ 'authentication' ] = array();
+	}
+
+	$response_object->data[ 'authentication' ][ 'oauth2' ] = array(
+		'authorize'	 => get_rest_url(null, '/oauth2/v1/access' ),
+		'token'	 => get_rest_url(null, '/oauth2/v1/access' ),
+		'version'	 => '0.1',
+	);
+	return $response_object;
   }
 }
