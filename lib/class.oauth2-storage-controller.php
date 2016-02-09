@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OAuth2 Storage Controller
  * This class is a simple storage class that utilizes $wpdb and WordPress's options API
@@ -13,9 +14,14 @@ class OAuth2_Storage_Controller extends OAuth2_Rest_Server {
    * @param  [type] $clientID [description]
    * @return [type]           [description]
    */
-  static function validateClient ( $clientID ) {
+  static function validateClient( $clientID ) {
+	$consumer = WP_REST_OAuth2_Client::get_by_client_id( $clientID );
 
-    return true;
+	if ( is_wp_error( $consumer ) ) {
+	  return false;
+	}
+
+	return true;
   }
 
 }

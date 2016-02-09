@@ -11,8 +11,12 @@
  */
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-include_once( dirname( __FILE__ ) . '/lib/class-wp-rest-client.php' );
-include_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-client.php' );
+include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-client.php' );
+include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-client.php' );
+include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-token.php' );
+include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-access-token.php' );
+include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-refresh-token.php' );
+
 
 include_once( dirname( __FILE__ ) . '/admin.php' );
 
@@ -81,8 +85,32 @@ class OAuth2_Rest_Server {
   static function register_storage() {
 	register_post_type( 'json_consumer', array(
 		'labels' => array(
-			'name' => __( 'Consumer', 'wp-oauth2' ),
-			'singular_name' => __( 'Consumers', 'wp-oauth2' ),
+			'name' => __( 'Consumers', 'wp-oauth2' ),
+			'singular_name' => __( 'Consumer', 'wp-oauth2' ),
+		),
+		'public' => false,
+		'hierarchical' => false,
+		'rewrite' => false,
+		'delete_with_user' => true,
+		'query_var' => false,
+	) );
+
+	register_post_type( 'oauth2_access_token', array(
+		'labels' => array(
+			'name' => __( 'Access tokens', 'wp-oauth2' ),
+			'singular_name' => __( 'Access token', 'wp-oauth2' ),
+		),
+		'public' => false,
+		'hierarchical' => false,
+		'rewrite' => false,
+		'delete_with_user' => true,
+		'query_var' => false,
+	) );
+
+	register_post_type( 'oauth2_refresh_token', array(
+		'labels' => array(
+			'name' => __( 'Refresh tokens', 'wp-oauth2' ),
+			'singular_name' => __( 'Refresh token', 'wp-oauth2' ),
 		),
 		'public' => false,
 		'hierarchical' => false,

@@ -66,12 +66,12 @@ class WP_REST_OAuth2_Client extends WP_REST_Client {
 		) );
 
 		if ( empty( $consumers ) || empty( $consumers[0] ) ) {
-			return new WP_Error( 'json_consumer_notfound', __( 'Consumer Key is invalid', 'rest_oauth2' ), array( 'status' => 401 ) );
+			return new WP_Error( 'json_consumer_notfound', __( 'Client ID is invalid', 'rest_oauth2' ), array( 'status' => 401 ) );
 		}
 
 		return $consumers[0];
 	}
-
+	
 	/**
 	 * Add extra meta to a post.
 	 *
