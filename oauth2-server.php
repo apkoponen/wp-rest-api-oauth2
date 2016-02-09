@@ -11,6 +11,18 @@
  */
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+include_once( dirname( __FILE__ ) . '/lib/class-wp-rest-client.php' );
+include_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-client.php' );
+
+include_once( dirname( __FILE__ ) . '/admin.php' );
+
+if ( defined( 'WP_CLI' ) && WP_CLI ) {
+	include_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-cli.php' );
+
+	WP_CLI::add_command( 'oauth2', 'WP_REST_OAuth2_CLI' );
+}
+
+
 add_action( 'rest_api_init', array( 'OAuth2_Rest_Server', 'register_routes' ) );
 add_action( 'init', array( 'OAuth2_Rest_Server', 'register_storage' ) );
 add_filter( 'rest_index', array( 'OAuth2_Rest_Server', 'add_routes_to_index' ) );
@@ -67,54 +79,16 @@ class OAuth2_Rest_Server {
    *
    */
   static function register_storage() {
-	require_once dirname( __FILE__ ) . '/lib/class.oauth2-admin.php';
-
-	register_post_type( 'oauth2_consumer', array(
-		'labels'			 => array(
-			'name'			 => __( 'Consumers', 'wp-oauth2' ),
-			'singular_name'	 => __( 'Consumer', 'wp-oauth2' ),
+	register_post_type( 'json_consumer', array(
+		'labels' => array(
+			'name' => __( 'Consumer', 'wp-oauth2' ),
+			'singular_name' => __( 'Consumers', 'wp-oauth2' ),
 		),
-		'supports'			 => array( 'title' ),
-		'public'			 => false,
-		'show_ui'			 => true,
-		'show_in_menu'		 => false,
-		'show_in_admin_bar'	 => false,
-		'hierarchical'		 => false,
-		'rewrite'			 => false,
-		'delete_with_user'	 => true,
-		'query_var'			 => false,
-	) );
-
-	register_post_type( 'oauth2_access_token', array(
-		'labels'			 => array(
-			'name'			 => __( 'Access Tokens', 'wp-oauth2' ),
-			'singular_name'	 => __( 'Access Token', 'wp-oauth2' ),
-		),
-		'supports'			 => array( 'title' ),
-		'public'			 => false,
-		'show_ui'			 => true,
-		'show_in_menu'		 => false,
-		'show_in_admin_bar'	 => false,
-		'hierarchical'		 => false,
-		'rewrite'			 => false,
-		'delete_with_user'	 => true,
-		'query_var'			 => false,
-	) );
-
-	register_post_type( 'oauth2_refresh_token', array(
-		'labels'			 => array(
-			'name'			 => __( 'Refresh Tokens', 'wp-oauth2' ),
-			'singular_name'	 => __( 'Refresh Token', 'wp-oauth2' ),
-		),
-		'supports'			 => array( 'title' ),
-		'public'			 => false,
-		'show_ui'			 => true,
-		'show_in_menu'		 => false,
-		'show_in_admin_bar'	 => false,
-		'hierarchical'		 => false,
-		'rewrite'			 => false,
-		'delete_with_user'	 => true,
-		'query_var'			 => false,
+		'public' => false,
+		'hierarchical' => false,
+		'rewrite' => false,
+		'delete_with_user' => true,
+		'query_var' => false,
 	) );
   }
   
@@ -131,7 +105,7 @@ class OAuth2_Rest_Server {
 
 	$response_object->data[ 'authentication' ][ 'oauth2' ] = array(
 		'authorize'	 => get_rest_url(null, '/oauth2/v1/access' ),
-		'token'	 => get_rest_url(null, '/oauth2/v1/access' ),
+		'token'	 => get_rest_url(null, '/oauth2/v1/token' ),
 		'version'	 => '0.1',
 	);
 	return $response_object;
