@@ -24,11 +24,11 @@ class WP_REST_OAuth2_Authenticator {
 	 * @return WP_User|null|WP_Error Authenticated user on success, null if no OAuth data supplied, error otherwise
 	 */
 	public function authenticate( $user ) {
-		if ( ! empty( $user ) || ! $this->should_attempt ) {
+		if ( ! empty( $user ) ) {
 			return $user;
 		}
 
-		// Skip authentication for OAuth meta requests
+		// Skip authentication for OAuth meta requests @TODO check if this applies
 		if ( get_query_var( 'json_oauth_route' ) ) {
 			return null;
 		}
@@ -40,40 +40,20 @@ class WP_REST_OAuth2_Authenticator {
 		}
 
 		// Fetch user by token key
-		$token = WP_REST_OAuth2_Access_Token::get_token( $params['oauth_token'] );
+		$token = WP_REST_OAuth2_Access_Token::get_token( $params[ 'oauth2_token' ] );
 		if ( is_wp_error( $token ) ) {
-			$this->auth_status = "";
-			return null;
-		}
-
-		$result = $this->check_token( $token, $params['oauth_consumer_key'] );
-		if ( is_wp_error( $result ) ) {
-			$this->auth_status = $result;
-			return null;
-		}
-		list( $consumer, $user ) = $result;
-
-		// Perform OAuth validation
-		$error = $this->check_oauth_signature( $consumer, $params, $token );
-		if ( is_wp_error( $error ) ) {
-			$this->auth_status = $error;
-			return null;
-		}
-
-		$error = $this->check_oauth_timestamp_and_nonce( $user, $params['oauth_timestamp'], $params['oauth_nonce'] );
-		if ( is_wp_error( $error ) ) {
-			$this->auth_status = $error;
+			$this->auth_status = $token;
 			return null;
 		}
 
 		$this->auth_status = true;
-		return $user->ID;
+		return $token[ 'user_id' ];
 	}
 
 	/**
 	 * Report authentication errors to the JSON API
 	 *
-	 * @param WP_Error|mixed $result Error from another authentication handler, null if we should handle it, or another value if not
+	 * @param WP_Error|mixed value Error from another authentication handler, null if we should handle it, or another value if not
 	 * @return WP_Error|boolean|null {@see WP_JSON_Server::check_authentication}
 	 */
 	public function get_authentication_errors( $value ) {
