@@ -1,6 +1,9 @@
 <?php
 /**
  * Administration UI and utilities
+ * 
+ * Based on WP REST API - OAuth 1.0a Server (https://github.com/WP-API/OAuth1).
+ * Used under GPL3 license.
  */
 
 require dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-admin.php';

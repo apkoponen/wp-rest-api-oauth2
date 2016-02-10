@@ -1,4 +1,8 @@
 <?php
+/*
+ * Based on WP REST API - OAuth 1.0a Server (https://github.com/WP-API/OAuth1).
+ * Used under GPL3 license.
+ */
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 

@@ -1,7 +1,10 @@
 <?php
+/**
+ * Based on WP REST API - OAuth 1.0a Server (https://github.com/WP-API/OAuth1).
+ * Used under GPL3 license.
+ */
 
-if ( !class_exists( 'WP_REST_Client' ) ) {
-abstract class WP_REST_Client {
+abstract class WP_REST_OAuth_Client {
 	/**
 	 * Get the client type.
 	 *
@@ -240,5 +243,4 @@ abstract class WP_REST_Client {
 		}
 		return $backtrace[2]['class'];
 	}
-}
 }

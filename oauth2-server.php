@@ -11,7 +11,7 @@
  */
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-client.php' );
+include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth-client.php' );
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-client.php' );
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-token.php' );
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-access-token.php' );

@@ -1,6 +1,10 @@
 <?php
+/**
+ * Based on WP REST API - OAuth 1.0a Server (https://github.com/WP-API/OAuth1).
+ * Used under GPL3 license.
+ */
 
-class WP_REST_OAuth2_Client extends WP_REST_Client {
+class WP_REST_OAuth2_Client extends WP_REST_OAuth_Client {
 	const CONSUMER_KEY_LENGTH = 12;
 	const CONSUMER_SECRET_LENGTH = 32;
 
