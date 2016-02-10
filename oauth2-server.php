@@ -36,6 +36,8 @@ add_filter( 'rest_index', array( 'OAuth2_Rest_Server', 'add_routes_to_index' ) )
  */
 class OAuth2_Rest_Server {
 
+  public static $authenticator = null;
+
   /**
    * Registers routes needed for the OAuth2 Server
    *
@@ -76,6 +78,25 @@ class OAuth2_Rest_Server {
 			)
 		)
 	) );
+  }
+
+  /* Register routes to authentication on rest index
+   *
+   * @param object $response_object WP_REST_Response Object
+   * @return object Filtered WP_REST_Response object
+   */
+
+  static function add_routes_to_index( $response_object ) {
+	if ( empty( $response_object->data[ 'authentication' ] ) ) {
+	  $response_object->data[ 'authentication' ] = array();
+	}
+
+	$response_object->data[ 'authentication' ][ 'oauth2' ] = array(
+		'authorize'	 => get_rest_url(null, '/oauth2/v1/access' ),
+		'token'	 => get_rest_url(null, '/oauth2/v1/token' ),
+		'version'	 => '0.1',
+	);
+	return $response_object;
   }
 
   /**
@@ -119,23 +140,8 @@ class OAuth2_Rest_Server {
 		'query_var' => false,
 	) );
   }
-  
-  /* Register routes to authentication
-   *
-   * @param object $response_object WP_REST_Response Object
-   * @return object Filtered WP_REST_Response object
-   */
 
-  static function add_routes_to_index( $response_object ) {
-	if ( empty( $response_object->data[ 'authentication' ] ) ) {
-	  $response_object->data[ 'authentication' ] = array();
-	}
-
-	$response_object->data[ 'authentication' ][ 'oauth2' ] = array(
-		'authorize'	 => get_rest_url(null, '/oauth2/v1/access' ),
-		'token'	 => get_rest_url(null, '/oauth2/v1/token' ),
-		'version'	 => '0.1',
-	);
-	return $response_object;
+  static function init_autheticator() {
+	self::$authenticator = new WP_REST_OAuth2_Authenticator();
   }
 }

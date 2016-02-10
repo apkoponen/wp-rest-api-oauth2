@@ -19,33 +19,42 @@ abstract class WP_REST_OAuth2_Token {
    * Retrieve a token's data
    *
    * @param string $oauth_token Token
-   * @return array|null Token data on success, null otherwise
+   * @return array|\WP_Error Token data on success, WP_Error otherwise
    */
   public static function get_token( $oauth_token ) {
-	$post_id = self::get_post_id_by_title( $oauth_token );
+	$class = function_exists( 'get_called_class' ) ? get_called_class() : self::get_called_class();
+	$post_id = $class::get_post_id_by_title( $oauth_token );
 
 	if ( empty( $post_id ) ) {
-	  return null;
+	  return new WP_Error( 'rest_oauth2_token_not_exists', __( 'Token does not exist.', 'rest_oauth2' ), array( 'status' => 401 ) );
 	}
 
-	$token = self::get_token_by_id( $post_id );
+	$token = $class::get_token_by_id( $post_id );
 
 	return $token;
   }
 
   /**
-   * Retrieve token based on post id
+   * Retrieve token based on post ID
    *
    * @param type $post_id
+   * @return array|\WP_Error Key-value array on success, WP_Error otherwise.
    */
   public static function get_token_by_id( $post_id ) {
 	$class = function_exists( 'get_called_class' ) ? get_called_class() : self::get_called_class();
-	$token_type = call_user_func( array( $class, 'get_type' ) );
+	$token_type = $class::get_type();
 
 	$post = get_post( $post_id );
 
-	if ( empty( $post ) || $post->post_type !== 'oauth2_' . $token_type . '_token' ) {
-	  return null;
+	if ( !$class::post_is_token( $post ) ) {
+	  return new WP_Error( 'rest_oauth2_token_id_not_valid', __( 'Token with given post ID does not exist.', 'rest_oauth2' ), array( 'status' => 401 ) );
+	}
+
+	$expires = intval( get_post_meta( $post_id, 'expires', true ) ); // 0 on false
+
+	if( $expires > 0 && $expires < time() ) {
+	  $class::revoke_token_by_id( $post_id );
+	  return new WP_Error( 'rest_oauth2_token_expired', __( 'Token has expired.', 'rest_oauth2' ), array( 'status' => 401 ) );
 	}
 
 	// Populate token data
@@ -55,7 +64,7 @@ abstract class WP_REST_OAuth2_Token {
 		'post_id'	 => $post->ID,
 		'client_id'	 => get_post_meta( $post_id, 'client_id', true ),
 		'user_id'	 => $post->post_author,
-		'expires'	 => intval( get_post_meta( $post_id, 'expires', true ) ), // 0 on false
+		'expires'	 => $expires,
 		'scope'		 => get_post_meta( $post_id, 'scope', true )
 	);
 
@@ -73,7 +82,7 @@ abstract class WP_REST_OAuth2_Token {
    */
   public static function generate_token( $client_id, $user_id, $expires = 0, $scope = '*' ) {
 	$class = function_exists( 'get_called_class' ) ? get_called_class() : self::get_called_class();
-	$token_type = call_user_func( array( $class, 'get_type' ) );
+	$token_type = $class::get_type();
 
 	// Issue access token
 	$token	 = apply_filters( 'json_oauth2_' . $token_type . '_token', wp_generate_password( self::TOKEN_KEY_LENGTH, false ) );
@@ -103,7 +112,7 @@ abstract class WP_REST_OAuth2_Token {
 	));
 
 	if( empty( $new_id ) || is_wp_error( $new_id ) ) {
-	  return new WP_Error( 'json_oauth2_token_save_failed', __( 'Could not save new token.', 'rest_oauth2' ), array( 'status' => 401 ) );
+	  return new WP_Error( 'rest_oauth2_token_save_failed', __( 'Could not save new token.', 'rest_oauth2' ), array( 'status' => 401 ) );
 	}
 
 	// Add metas
@@ -119,34 +128,100 @@ abstract class WP_REST_OAuth2_Token {
   /**
    * Revoke a token
    *
-   * @param string $token Access token
+   * @param string $oauth_token Access token
    * @return array|false|WP_Post|WP_Error WP_Error or False on failure.
    */
-  public static function revoke_token( $token ) {
+  public static function revoke_token( $oauth_token ) {
 	$class = function_exists( 'get_called_class' ) ? get_called_class() : self::get_called_class();
-	$token_type = call_user_func( array( $class, 'get_type' ) );
+	$post_id = $class::get_post_id_by_title( $oauth_token );
 
-	$data = self::get_token( $token );
-
-	if ( empty( $data ) ) {
-	  return new WP_Error( 'json_oauth2_invalid_token', __( 'The ' . $token_type . ' token does not exist', 'rest_oauth1' ), array( 'status' => 401 ) );
+	if ( empty( $post_id ) ) {
+	  return new WP_Error( 'rest_oauth2_token_not_exists', __( 'Token does not exist.', 'rest_oauth2' ), array( 'status' => 401 ) );
 	}
 
-	return wp_delete_post( $data['post_id'], true );
+	$result = $class::revoke_token_by_id( $post_id );
+
+	return $result;
+  }
+
+  /**
+   * Revokes a token by ID.
+   *
+   * @param type $post_id
+   * @return array|false|WP_Post|WP_Error WP_Error or False on failure.
+   */
+  public static function revoke_token_by_id( $post_id ) {
+	$class = function_exists( 'get_called_class' ) ? get_called_class() : self::get_called_class();
+
+	$post = get_post( $post_id );
+
+	if ( !$class::post_is_token( $post ) ) {
+	  return new WP_Error( 'rest_oauth2_token_id_not_valid', __( 'Token with given post ID does not exist.', 'rest_oauth2' ), array( 'status' => 401 ) );
+	}
+
+	return wp_delete_post( $post_id, true );
+  }
+
+  /**
+   * Check if given post object is a valid token.
+   *
+   * @param WP_Post $post
+   * @return boolean
+   */
+  public static function post_is_token( $post ) {
+	$class = function_exists( 'get_called_class' ) ? get_called_class() : self::get_called_class();
+	$token_type = $class::get_type();
+
+	if ( empty( $post ) || $post->post_type !== 'oauth2_' . $token_type . '_token' ) {
+	  return false;
+	}
+	return true;
   }
 
   /**
    * Return post id based on title
    *
    * @global type $wpdb
+   * @param string $post_title
    * @return int|null Post ID, or null on failure
    */
   public static function get_post_id_by_title( $post_title ) {
 	global $wpdb;
 
-	$query	 = $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_title = '%s'", $post_title );
+	$query	 = $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_title = '%s' LIMIT 1", $post_title );
 	return $wpdb->get_var( $query );
   }
 
+  /**
+  * Get tokens
+  *
+  * @param array $additional_args WP_Query args
+  * @return \WP_Query
+  */
+  public static function get_tokens_query( $additional_args = array() ) {
+	$class = function_exists( 'get_called_class' ) ? get_called_class() : self::get_called_class();
+	$token_type = $class::get_type();
+
+	$defaults = array(
+		'post_type'		 => 'oauth2_' . $token_type . '_token',
+		'post_status'	 => 'any'
+	);
+
+	$args = wp_parse_args( $additional_args, $defaults );
+
+	return new WP_Query( $args );
+  }
+
+  /**
+   * Get clients
+   *
+   * @param array $additional_args WP_Query args
+   * @return array Array of WP_Posts
+   */
+  public static function get_tokens( $additional_args = array() ) {
+	$query = self::get_tokens_query( $additional_args );
+
+	return $query->posts;
+  }
 }
 

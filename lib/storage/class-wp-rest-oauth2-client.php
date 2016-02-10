@@ -75,7 +75,42 @@ class WP_REST_OAuth2_Client extends WP_REST_OAuth_Client {
 
 		return $consumers[0];
 	}
-	
+
+	/**
+	 * Get clients
+	 *
+	 * @param array $additional_args WP_Query args
+	 * @return \WP_Query
+	 */
+	public static function get_clients_query( $additional_args = array() ) {
+		$defaults = array(
+			'post_type' => 'json_consumer',
+			'post_status' => 'any',
+			'meta_query' => array(
+				array(
+					'key' => 'type',
+					'value' => 'oauth2',
+				),
+			)
+		);
+
+		$args = wp_parse_args( $additional_args, $defaults);
+		
+		return new WP_Query($args);
+	}
+
+	/**
+	 * Get clients
+	 *
+	 * @param array $additional_args WP_Query args
+	 * @return array Array of WP_Posts
+	 */
+	public static function get_clients( $additional_args = array() ) {
+		$query = self::get_clients_query($additional_args);
+
+		return $query->posts;
+	}
+
 	/**
 	 * Add extra meta to a post.
 	 *

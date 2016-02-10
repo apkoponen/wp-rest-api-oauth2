@@ -26,7 +26,7 @@ abstract class WP_REST_OAuth2_Authorization_Code {
    */
   public static function generate_code( $client_id, $user_id, $redirect_uri, $expires = 0, $scope = '*' ) {
 	if ( intval( $expires ) === 0 ) {
-	  $expires = current_time( 'timestamp' ) + 30;
+	  $expires = time() + 30; // Authorization codes will always expire.
 	}
 
 	// Issue access token
@@ -72,7 +72,7 @@ abstract class WP_REST_OAuth2_Authorization_Code {
 	$codes	 = array_map( 'unserialize', $results );
 
 	foreach ( $codes as $code ) {
-	  if ( $code[ 'expires' ] >= current_time( 'timestamp' ) ) {
+	  if ( $code[ 'expires' ] >= time() ) {
 		delete_option( 'oauth2_code_' . $code[ 'code' ] );
 	  }
 	}
