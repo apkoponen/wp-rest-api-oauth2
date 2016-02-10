@@ -204,7 +204,8 @@ abstract class WP_REST_OAuth2_Token {
 
 	$defaults = array(
 		'post_type'		 => 'oauth2_' . $token_type . '_token',
-		'post_status'	 => 'any'
+		'post_status'	 => 'any',
+		'posts_per_page' => -1
 	);
 
 	$args = wp_parse_args( $additional_args, $defaults );

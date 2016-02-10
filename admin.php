@@ -20,8 +20,17 @@ add_action( 'edit_user_profile_update', 'rest_oauth2_profile_save', 10, 1 );
 function rest_oauth2_profile_section( $user ) {
 	global $wpdb;
 
+	// Get user's tokens that haven't expired
 	$query_args = array(
-		'author' => $user->ID
+		'author' => $user->ID,
+		'meta_query' => array(
+			array(
+				'key' => 'expires',
+				'value'   => time(),
+				'compare' => '>',
+				'type' => 'NUMERIC'
+			)
+		)
 	);
 	$access_tokens = WP_REST_OAuth2_Access_Token::get_tokens( $query_args );
 	?>
@@ -87,7 +96,7 @@ function rest_oauth2_profile_save( $user_id ) {
 	$token = WP_REST_OAuth2_Access_Token::get_token_by_id( $post_id );
 
 	// Check that the request is valid and the user has access.
-	if ( empty( $token ) || 
+	if ( is_wp_error( $token ) || 
 		( !current_user_can( 'edit_post', $post_id ) && $token[ 'user_id' ] !== get_current_user_id() ) ) {
 		wp_die(
 			'<h1>' . __( 'Cheatin&#8217; uh?', 'rest_oauth2' ) . '</h1>' .
