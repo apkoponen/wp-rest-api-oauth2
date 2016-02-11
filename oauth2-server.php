@@ -16,6 +16,8 @@ include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-client.ph
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-token.php' );
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-access-token.php' );
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-refresh-token.php' );
+include_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-authenticator.php' );
+
 
 
 include_once( dirname( __FILE__ ) . '/admin.php' );
@@ -30,6 +32,8 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 add_action( 'rest_api_init', array( 'OAuth2_Rest_Server', 'register_routes' ) );
 add_action( 'init', array( 'OAuth2_Rest_Server', 'register_storage' ) );
 add_filter( 'rest_index', array( 'OAuth2_Rest_Server', 'add_routes_to_index' ) );
+add_action( 'rest_api_init', array( 'OAuth2_Rest_Server', 'init_autheticator' ) );
+
 
 /**
  * OAuth2 Rest Server Main Class
