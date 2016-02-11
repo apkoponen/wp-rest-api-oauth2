@@ -58,10 +58,10 @@ class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
       exit; 
     }
 
-    // Setup the auth code and pass it back to the user
-    print_r($user_id);
-    exit;
-    // If the user is logged in, begin the process of creating a auth code and returning it back to the user.
+	var_dump($request);
+	exit;
+
+    //$code = WP_REST_OAuth2_Authorization_Code::generate_code();
 
     // if we made it this far, everything has checked out and we can begin our logged in check and authorize process.
     $data = array( 

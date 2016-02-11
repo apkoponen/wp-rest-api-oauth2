@@ -68,7 +68,7 @@ class WP_REST_OAuth2_Header_Helper {
    * @return array
    */
   public static function get_authorization_parameters() {
-	$header			 = $this->get_authorization_header();
+	$header			 = self::get_authorization_header();
 	$header_params	 = null;
 
 	if ( !empty( $header ) ) {

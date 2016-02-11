@@ -11,11 +11,15 @@
  */
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+include_once( dirname( __FILE__ ) . '/lib/helpers/class-wp-rest-header-helper.php' );
+
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth-client.php' );
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-client.php' );
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-token.php' );
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-access-token.php' );
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-refresh-token.php' );
+include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-authorization-code.php' );
+
 include_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-authenticator.php' );
 
 
