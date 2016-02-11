@@ -40,11 +40,7 @@ class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
 
     // Response type MUST be 'code'
     if ( ! self::validateResponseType( $request[ 'response_type' ] ) ) {
-      $error = array(
-        'error' => 'unsupported_response_type',
-        'error_description' => 'The authorization server does not support obtaining an authorization code using this method.'
-        );
-
+      $error = WP_REST_OAuth2_Error_Helper::get_error( 'unsupported_response_type' );
       return new OAuth2_Response_Controller( $error );
     }
 
@@ -58,20 +54,27 @@ class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
       exit; 
     }
 
-	var_dump($request);
-	exit;
+    $code = WP_REST_OAuth2_Authorization_Code::generate_code( $request[ 'client_id' ], $user_id, $request[ 'redirect_uri' ], time() + 30 );
 
-    //$code = WP_REST_OAuth2_Authorization_Code::generate_code();
-
+	if( is_wp_error( $code ) ) {
+	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request', $code);
+	  
+      return new OAuth2_Response_Controller( $error );
+	}
+	
     // if we made it this far, everything has checked out and we can begin our logged in check and authorize process.
     $data = array( 
-      'code' => '123123123' 
-      );
+      'code' => $code[ 'code' ],
+    );
 
     // If the state is not null, we need to return is as well
     if ( ! is_null( self::$state ) ) {
       $data[ 'state' ] = self::$state;
     }
+
+	$redirect_url = add_query_arg($data, $request->get_param('redirect_uri'));
+	wp_redirect($redirect_url);
+	exit;
     
     return new OAuth2_Response_Controller( $data );
   } 

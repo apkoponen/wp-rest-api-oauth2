@@ -12,6 +12,7 @@
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 include_once( dirname( __FILE__ ) . '/lib/helpers/class-wp-rest-header-helper.php' );
+include_once( dirname( __FILE__ ) . '/lib/helpers/class-wp-rest-error-helper.php' );
 
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth-client.php' );
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-client.php' );
