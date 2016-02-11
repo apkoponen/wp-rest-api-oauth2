@@ -1,6 +1,5 @@
 <?php 
 /**
- * @todo Add redirect uri check and validation
  * @todo 
  */
 class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
