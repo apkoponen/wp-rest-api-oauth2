@@ -92,7 +92,7 @@ class OAuth2_Rest_Server {
 	}
 
 	$response_object->data[ 'authentication' ][ 'oauth2' ] = array(
-		'authorize'	 => get_rest_url(null, '/oauth2/v1/access' ),
+		'authorize'	 => get_rest_url(null, '/oauth2/v1/authorize' ),
 		'token'	 => get_rest_url(null, '/oauth2/v1/token' ),
 		'version'	 => '0.1',
 	);
