@@ -11,6 +11,7 @@ abstract class WP_REST_OAuth2_Authorization_Code {
    * @return array|false Code data on success, false otherwise
    */
   public static function get_authorization_code( $code ) {
+	$code = sanitize_key($code);
 	return get_option( 'oauth2_code_' . $code );
   }
 

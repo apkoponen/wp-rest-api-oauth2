@@ -1,80 +1,91 @@
-<?php 
+<?php
+
 /**
- * @todo 
+ * @TODO Store used access tokens in order to check reuse.
  */
 class OAuth2_Token_Controller extends OAuth2_Rest_Server {
 
   // Validate Request
-  static function validate ( WP_REST_Request $request ) {
+  static function validate( WP_REST_Request $request ) {
+
+	// Check if required params exist
+	$required_params = array( 'client_id', 'client_secret', 'grant_type', 'redirect_uri' );
+
+	$required_missing = false;
+	foreach ( $required_params as $required_param ) {
+	  if ( empty( $request->get_param( $required_param ) ) ) {
+		$required_missing = true;
+	  }
+	}
+
+	if ( $required_missing ) {
+	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
+
+	  return new OAuth2_Response_Controller( $error );
+	}
+
+	// Check that client credentials are valid
+	// We may be able to move this up in the first check as well
+	if ( !OAuth2_Storage_Controller::authenticateClient( $request[ 'client_id' ], $request[ 'client_secret' ] ) ) {
+	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
+
+	  return new OAuth2_Response_Controller( $error );
+	}
+
+	$supported_grant_types = apply_filters( 'oauth2_grant_types', array( 'authorization_code' ) );
+
+	if ( !in_array( $request[ 'grant_type' ], $supported_grant_types ) ) {
+	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'unsupported_grant_type' );
+	  return new OAuth2_Response_Controller( $error );
+	}
+
+	$code = WP_REST_OAuth2_Authorization_Code::get_authorization_code( $request[ 'code' ] );
+
+	// Authorization code MUST exists
+	if ( empty( $code ) ) {
+	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
+
+	  return new OAuth2_Response_Controller( $error );
+	}
+
+	// Authorization code redirect URI and client MUST match, and the code should not have expired
+	$is_valid_redirect_uri = !empty( $code[ 'redirect_uri' ] ) && $code[ 'redirect_uri' ] === $request[ 'redirect_uri' ];
+	$is_valid_client = $code[ 'client_id' ] === $request[ 'client_id' ];
+	$code_has_expired = $code[ 'expires' ] < time();
+	if ( !$is_valid_redirect_uri || !$is_valid_client || $code_has_expired ) {
+	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
+
+	  return new OAuth2_Response_Controller( $error );
+	}
+
+
+
+	// Codes are single use, remove it
+	if ( !WP_REST_OAuth2_Authorization_Code::revoke_code( $code[ 'code' ] ) ) {
+	  	$error = WP_REST_OAuth2_Error_Helper::get_error( 'server_error' );
+		
+		return new OAuth2_Response_Controller( $error );
+	}
+
+	// Store authorization code to access token (for possible revocation).
+	$extra_metas = array(
+		'authorization_code' => $code[ 'code' ]
+	);
+	$expires = time() + MONTH_IN_SECONDS;
+	$access_token = WP_REST_OAuth2_Access_Token::generate_token( $code[ 'client_id' ], $code[ 'user_id' ], $expires, $code[ 'scope' ], $extra_metas );
+
+	// Store authorization code and access token to refresh token (for possible revocation).
+	$extra_metas['access_token'] = $access_token[ 'token' ];
+	$refresh_token = WP_REST_OAuth2_Refresh_Token::generate_token( $code[ 'client_id' ], $code[ 'user_id' ], 0, $code[ 'scope' ], $extra_metas );
+
 	$data = array(
-		"access_token" => "asdfghjkllö123447",
-		"expires_in" => 3600,
-		"token_type" => "Bearer"
+		"access_token"	 => $access_token[ 'token' ],
+		"expires_in"	 => MONTH_IN_SECONDS,
+		"token_type"	 => "Bearer",
+		"refresh_token"  => $refresh_token[ 'token' ]
 	);
 
 	return new OAuth2_Response_Controller( $data );
-
-
-    // Check if the client ID and response type is set
-    if ( ! isset( $request[ 'response_type' ] ) || ! isset( $request[ 'client_id' ] ) ) {
-      $error = array(
-        'error' => 'invalid_request',
-        'error_description' => 'The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed.'
-        );
-
-      return new OAuth2_Response_Controller( $error );
-    }
-    
-    // Check id client ID is valid.
-    // We may be able to move this up in the first check as well
-    if ( ! OAuth2_Storage_Controller::validateClient( $request[ 'client_id' ] ) ) {
-      $error = array(
-        'error' => 'invalid_request',
-        'error_description' => 'The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed.'
-        );
-
-      return new OAuth2_Response_Controller( $error );
-    }
-
-    // Response type MUST be 'code'
-    if ( ! self::validateResponseType( $request[ 'response_type' ] ) ) {
-      $error = WP_REST_OAuth2_Error_Helper::get_error( 'unsupported_response_type' );
-      return new OAuth2_Response_Controller( $error );
-    }
-
-    $user_id = apply_filters( 'determine_current_user', false );
-
-    if ( ! $user_id ) {
-      global $wp;
-      $current_url = add_query_arg( $wp->query_string . http_build_query( $request->get_params() ), '', site_url( $wp->request ) );
-      wp_redirect( wp_login_url( $current_url ) ); 
-      
-      exit; 
-    }
-
-    $code = WP_REST_OAuth2_Authorization_Code::generate_code( $request[ 'client_id' ], $user_id, $request[ 'redirect_uri' ], time() + 30 );
-
-	if( is_wp_error( $code ) ) {
-	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request', $code);
-	  
-      return new OAuth2_Response_Controller( $error );
-	}
-	
-    // if we made it this far, everything has checked out and we can begin our logged in check and authorize process.
-    $data = array( 
-      'code' => $code[ 'code' ]
-    );
-
-    // If the state is not null, we need to return is as well
-    if ( ! is_null( self::$state ) ) {
-      $data[ 'state' ] = self::$state;
-    }
-
-	$redirect_url = add_query_arg($data, $request->get_param('redirect_uri'));
-	wp_redirect($redirect_url);
-	exit;
-    
-    return new OAuth2_Response_Controller( $data );
-  } 
+  }
 
 }

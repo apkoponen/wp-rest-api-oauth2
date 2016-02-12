@@ -121,7 +121,7 @@ abstract class WP_REST_OAuth2_Token {
 	foreach( $metas as $meta ) {
 	  add_post_meta($new_id, $meta, $data[$meta]);
 	}
-	$sanitize_extra_metas = $class::sanitize_extra_meta($extra_metas);
+	$sanitize_extra_metas = $class::sanitize_extra_meta( $extra_metas, $data );
 	foreach( $sanitize_extra_metas as $key => $value ) {
 	  add_post_meta($new_id, $key, $value);
 	}

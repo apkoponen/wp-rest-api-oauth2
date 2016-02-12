@@ -51,7 +51,7 @@ class WP_REST_OAuth2_Error_Helper {
 		'unsupported_grant_type'	 => 'The authorization grant type is not supported by the authorization server.',
 		'invalid_credentials'		 => 'The user credentials were incorrect.' // Not is Spec
 	);
-	$error_description	 = ( isset( $error_descriptions[ $error_code ] ) ) ? isset( $error_descriptions[ $error_code ] ) : '';
+	$error_description	 = ( isset( $error_descriptions[ $error_code ] ) ) ? $error_descriptions[ $error_code ] : '';
 	return $error_description;
   }
 

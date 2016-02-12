@@ -66,7 +66,7 @@ class OAuth2_Rest_Server {
 	register_rest_route( 'oauth2/v1', '/authorize', array(
 		'methods'	 => 'GET',
 		'callback'	 => array( 'OAuth2_Authorize_Controller', 'validate' ),
-		'args'		 => array(
+		/*'args'		 => array(
 			'client_id'		 => array(
 				'required' => true,
 			//'validate_callback' => 'oauth2_validate_authorize_request'
@@ -86,7 +86,7 @@ class OAuth2_Rest_Server {
 				'required' => false,
 			//'validate_callback' => 'oauth2_set_state'
 			)
-		)
+		)*/
 	) );
 
 	// Registers the token endpoint

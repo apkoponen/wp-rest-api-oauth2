@@ -16,23 +16,25 @@ class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
     // Set state if provided
     self::setState( $request );
 
-    // Check if the client ID and response type is set
-    if ( ! isset( $request[ 'response_type' ] ) || ! isset( $request[ 'client_id' ] ) ) {
-      $error = array(
-        'error' => 'invalid_request',
-        'error_description' => 'The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed.'
-        );
 
-      return new OAuth2_Response_Controller( $error );
-    }
+    // Check if required params exist
+	$required_params = array('client_id', 'response_type', 'redirect_uri');
+	$required_missing = false;
+	foreach($required_params as $required_param) {
+	  if( empty( $request->get_param( $required_param ) ) ) {
+		$required_missing = true;
+	  }
+	}
+	
+	if ( $required_missing ) {
+	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
+	  return new OAuth2_Response_Controller( $error );
+	}
     
     // Check id client ID is valid.
     // We may be able to move this up in the first check as well
     if ( ! OAuth2_Storage_Controller::validateClient( $request[ 'client_id' ] ) ) {
-      $error = array(
-        'error' => 'invalid_request',
-        'error_description' => 'The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed.'
-        );
+	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
 
       return new OAuth2_Response_Controller( $error );
     }
