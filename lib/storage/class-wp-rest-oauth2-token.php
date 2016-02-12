@@ -78,9 +78,10 @@ abstract class WP_REST_OAuth2_Token {
    * @param int $user_id
    * @param int $expires
    * @param string $scope Comma separated list of allowed capabilities
+   * @param array $extra_metas Key-value array of extra metas to add.
    * @return WP_Error|array OAuth token data on success, error otherwise
    */
-  public static function generate_token( $client_id, $user_id, $expires = 0, $scope = '*' ) {
+  public static function generate_token( $client_id, $user_id, $expires = 0, $scope = '*', $extra_metas = array() ) {
 	$class = function_exists( 'get_called_class' ) ? get_called_class() : self::get_called_class();
 	$token_type = $class::get_type();
 
@@ -119,6 +120,10 @@ abstract class WP_REST_OAuth2_Token {
 	$metas = array('client_id', 'expires', 'scope');
 	foreach( $metas as $meta ) {
 	  add_post_meta($new_id, $meta, $data[$meta]);
+	}
+	$sanitize_extra_metas = $class::sanitize_extra_meta($extra_metas);
+	foreach( $sanitize_extra_metas as $key => $value ) {
+	  add_post_meta($new_id, $key, $value);
 	}
 
 	return $data;
@@ -224,5 +229,20 @@ abstract class WP_REST_OAuth2_Token {
 
 	return $query->posts;
   }
+
+	/**
+	 * Sanitize extra meta to a post.
+	 *
+	 * If you'd like to add extra meta on token creation, add it here. This
+	 * works the same as a filter; make sure you return the original array!
+	 *
+	 * @param array $metas Metadata for the post as key-value array.
+	 * @param array $token Token data.
+	 * @return array Metadata to actually save.
+	 */
+	protected static function sanitize_extra_meta( $metas, $token ) {
+		$sanitized_metas = array_map('sanitize_text_field', $metas);
+		return $sanitized_metas;
+	}
 }
 

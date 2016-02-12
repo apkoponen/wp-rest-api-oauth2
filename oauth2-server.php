@@ -58,6 +58,7 @@ class OAuth2_Rest_Server {
    */
   static function register_routes() {
 	require_once dirname( __FILE__ ) . '/lib/class.oauth2-authorize-controller.php';
+	require_once dirname( __FILE__ ) . '/lib/class.oauth2-token-controller.php';
 	require_once dirname( __FILE__ ) . '/lib/class.oauth2-response-controller.php';
 	require_once dirname( __FILE__ ) . '/lib/class.oauth2-storage-controller.php';
 
@@ -67,15 +68,15 @@ class OAuth2_Rest_Server {
 		'callback'	 => array( 'OAuth2_Authorize_Controller', 'validate' ),
 		'args'		 => array(
 			'client_id'		 => array(
-				'required' => false,
+				'required' => true,
 			//'validate_callback' => 'oauth2_validate_authorize_request'
 			),
 			'response_type'	 => array(
-				'required' => false,
+				'required' => true,
 			//'validate_callback' => array( 'OAuth2_Authorize_Controller', 'validateResponseType' )
 			),
 			'redirect_uri'	 => array(
-				'required' => false,
+				'required' => true,
 			//'validate_callback' => 'oauth2_validate_redirect_uri'
 			),
 			'scope'			 => array(
@@ -84,6 +85,30 @@ class OAuth2_Rest_Server {
 			'state'			 => array(
 				'required' => false,
 			//'validate_callback' => 'oauth2_set_state'
+			)
+		)
+	) );
+
+	// Registers the token endpoint
+	register_rest_route( 'oauth2/v1', '/token', array(
+		'methods'	 => 'POST',
+		'callback'	 => array( 'OAuth2_Token_Controller', 'validate' ),
+		'args'		 => array(
+			'client_id'		 => array(
+				'required' => true,
+			//'validate_callback' => 'oauth2_validate_authorize_request'
+			),
+			'client_secret'	  => array(
+				'required' => true,
+			//'validate_callback' => 'oauth2_validate_authorize_request'
+			),
+			'grant_type'	 => array(
+				'required' => true,
+			//'validate_callback' => array( 'OAuth2_Authorize_Controller', 'validateResponseType' )
+			),
+			'redirect_uri'	 => array(
+				'required' => true,
+			//'validate_callback' => 'oauth2_validate_redirect_uri'
 			)
 		)
 	) );
