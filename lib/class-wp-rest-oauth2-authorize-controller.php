@@ -72,6 +72,8 @@ class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
 
     // Ensure that the option is in correct
 
+    // Return
+
     // If the state is not null, we need to return is as well
     if ( ! is_null( self::$state ) ) {
       $data[ 'state' ] = self::$state;

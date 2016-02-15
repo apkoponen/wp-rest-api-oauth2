@@ -22,42 +22,20 @@ class OAuth2_Rest_Server {
 	/**
 	 * Registers routes needed for the OAuth2 Server
 	 *
-	 * @todo  Deturmine if we really want to call the args parameter when registering the route.
-	 * The REST API does not return the correct format needed if we run them through the args.
-	 * Currently validation is done in the authorize controller but there may be be batter way of doing it.
+	 * Note: This does not register and arguments with the routes since, the return for the errors violates the return
+   * for that is required for OAuth2. 
 	 * 
 	 * @return [type] [description]
 	 */
 	static function register_routes() {
-		require_once dirname(  __FILE__ ) . '/lib/class.oauth2-authorize-controller.php';
-		require_once dirname(  __FILE__ ) . '/lib/class.oauth2-response-controller.php';
-		require_once dirname(  __FILE__ ) . '/lib/class.oauth2-storage-controller.php';
+		require_once dirname(  __FILE__ ) . '/lib/class-wp-rest-oauth2-authorize-controller.php';
+		require_once dirname(  __FILE__ ) . '/lib/class-wp-rest-oauth2-response-controller.php';
+		require_once dirname(  __FILE__ ) . '/lib/class-wp-rest-oauth2-storage-controller.php';
 
 		// Registers the authorize endpoint
 		register_rest_route( 'oauth2/v1', '/authorize', array(
 			'methods' => 'GET',
-			'callback' => array( 'OAuth2_Authorize_Controller', 'validate' ),
-			'args' => array(
-				'client_id' => array (
-					'required' => false,
-					//'validate_callback' => 'oauth2_validate_authorize_request'
-				),
-				'response_type' => array (
-					'required' => false,
-					//'validate_callback' => array( 'OAuth2_Authorize_Controller', 'validateResponseType' )
-				),
-				'redirect_uri' => array (
-					'required' => false,
-					//'validate_callback' => 'oauth2_validate_redirect_uri'
-				),
-				'scope' => array (
-					'required' => false
-				),
-				'state' => array (
-					'required' => false,
-					//'validate_callback' => 'oauth2_set_state'
-				)
-			)
+			'callback' => array( 'OAuth2_Authorize_Controller', 'validate' )
 		) );
 	}
 
