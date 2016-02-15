@@ -1,6 +1,6 @@
 <?php 
 /**
- * @todo Add redirect uri check and validation
+ * @todo Add redirect URI check and validation
  * @todo 
  */
 class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
@@ -48,8 +48,10 @@ class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
       return new OAuth2_Response_Controller( $error );
     }
 
+    // Check is the current user has some sort of login sessions.
     $user_id = apply_filters( 'determine_current_user', false );
 
+    // If there is no user logged in then, we can simply pass them to the wp-login page with a redirect.
     if ( ! $user_id ) {
       global $wp;
       $current_url = add_query_arg( $wp->query_string . http_build_query( $request->get_params() ), '', site_url( $wp->request ) );
@@ -71,8 +73,6 @@ class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
     ) );
 
     // Ensure that the option is in correct
-
-    // Return
 
     // If the state is not null, we need to return is as well
     if ( ! is_null( self::$state ) ) {
