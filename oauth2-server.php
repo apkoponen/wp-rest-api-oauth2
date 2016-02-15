@@ -12,12 +12,13 @@
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-add_action( 'rest_api_init', array( 'OAuth2_Rest_Server', 'register_routes' ) );
+// Imitates the server
+add_action( 'rest_api_init', array( 'WP_REST_OAuth2_Server', 'register_routes' ) );
 
 /**
  * OAuth2 Rest Server Main Class
  */
-class OAuth2_Rest_Server {
+class WP_REST_OAuth2_Server {
 
 	/**
 	 * Registers routes needed for the OAuth2 Server

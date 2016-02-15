@@ -3,7 +3,7 @@
  * @todo Add redirect URI check and validation
  * @todo 
  */
-class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
+class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 
   /**
    * State property
