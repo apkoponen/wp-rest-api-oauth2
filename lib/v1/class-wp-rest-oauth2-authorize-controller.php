@@ -24,18 +24,18 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
         'error_description' => 'The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed.'
         );
 
-      return new OAuth2_Response_Controller( $error );
+      return new WP_REST_OAuth2_Response_Controller( $error );
     }
     
     // Check id client ID is valid.
     // We may be able to move this up in the first check as well
-    if ( ! OAuth2_Storage_Controller::validateClient( $request[ 'client_id' ] ) ) {
+    if ( ! WP_REST_OAuth2_Storage_Controller::validateClient( $request[ 'client_id' ] ) ) {
       $error = array(
         'error' => 'invalid_request',
         'error_description' => 'The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed.'
         );
 
-      return new OAuth2_Response_Controller( $error );
+      return new WP_REST_OAuth2_Response_Controller( $error );
     }
 
     // Response type MUST be 'code'
@@ -45,7 +45,7 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
         'error_description' => 'The authorization server does not support obtaining an authorization code using this method.'
         );
 
-      return new OAuth2_Response_Controller( $error );
+      return new WP_REST_OAuth2_Response_Controller( $error );
     }
 
     // Check is the current user has some sort of login sessions.
@@ -64,7 +64,7 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
      * Prepare start the code prep
      * @var OAuth2_Storage_Controller
      */
-    $storage = new OAuth2_Storage_Controller();
+    $storage = new WP_REST_OAuth2_Storage_Controller();
     $storage->setAuthCode( array(
       'client_id' => $request[ 'client_id' ],
       'user_id' => $user_id,
@@ -79,7 +79,7 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
       $data[ 'state' ] = self::$state;
     }
     
-    return new OAuth2_Response_Controller( $data );
+    return new WP_REST_OAuth2_Response_Controller( $data );
   } 
 
   /**

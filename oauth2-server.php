@@ -36,7 +36,7 @@ class WP_REST_OAuth2_Server {
 		// Registers the authorize endpoint
 		register_rest_route( 'oauth2/v1', '/authorize', array(
 			'methods' => 'GET',
-			'callback' => array( 'OAuth2_Authorize_Controller', 'validate' )
+			'callback' => array( 'WP_REST_OAuth2_Authorize_Controller', 'validate' )
 		) );
 	}
 
