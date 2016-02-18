@@ -29,21 +29,21 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 
 	if ( $required_missing ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
-	  return new OAuth2_Response_Controller( $error );
+	  return new WP_REST_OAuth2_Response_Controller( $error );
 	}
 
     // Check id client ID is valid.
     // We may be able to move this up in the first check as well
-    if ( ! OAuth2_Storage_Controller::validateClient( $request[ 'client_id' ] ) ) {
+    if ( ! WP_REST_OAuth2_Storage_Controller::validateClient( $request[ 'client_id' ] ) ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
 
-      return new OAuth2_Response_Controller( $error );
+      return new WP_REST_OAuth2_Response_Controller( $error );
     }
 
     // Response type MUST be 'code'
     if ( ! self::validateResponseType( $request[ 'response_type' ] ) ) {
       $error = WP_REST_OAuth2_Error_Helper::get_error( 'unsupported_response_type' );
-      return new OAuth2_Response_Controller( $error );
+      return new WP_REST_OAuth2_Response_Controller( $error );
     }
 
     $user_id = apply_filters( 'determine_current_user', false );
@@ -61,7 +61,7 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 	if( is_wp_error( $code ) ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request', $code);
 
-      return new OAuth2_Response_Controller( $error );
+      return new WP_REST_OAuth2_Response_Controller( $error );
 	}
 
     // if we made it this far, everything has checked out and we can begin our logged in check and authorize process.
@@ -78,7 +78,7 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 	wp_redirect($redirect_url);
 	exit;
 
-    return new OAuth2_Response_Controller( $data );
+    return new WP_REST_OAuth2_Response_Controller( $data );
   }
 
   /**

@@ -21,7 +21,7 @@ class WP_REST_OAuth2_Token_Controller extends WP_REST_OAuth2_Server {
 	if ( $required_missing ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
 
-	  return new OAuth2_Response_Controller( $error );
+	  return new WP_REST_OAuth2_Response_Controller( $error );
 	}
 
 	// Check that client credentials are valid
@@ -29,14 +29,14 @@ class WP_REST_OAuth2_Token_Controller extends WP_REST_OAuth2_Server {
 	if ( !OAuth2_Storage_Controller::authenticateClient( $request[ 'client_id' ], $request[ 'client_secret' ] ) ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
 
-	  return new OAuth2_Response_Controller( $error );
+	  return new WP_REST_OAuth2_Response_Controller( $error );
 	}
 
 	$supported_grant_types = apply_filters( 'wp_rest_oauth2_grant_types', array( 'authorization_code' ) );
 
 	if ( !in_array( $request[ 'grant_type' ], $supported_grant_types ) ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'unsupported_grant_type' );
-	  return new OAuth2_Response_Controller( $error );
+	  return new WP_REST_OAuth2_Response_Controller( $error );
 	}
 
 	$code = WP_REST_OAuth2_Authorization_Code::get_authorization_code( $request[ 'code' ] );
@@ -45,7 +45,7 @@ class WP_REST_OAuth2_Token_Controller extends WP_REST_OAuth2_Server {
 	if ( empty( $code ) ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
 
-	  return new OAuth2_Response_Controller( $error );
+	  return new WP_REST_OAuth2_Response_Controller( $error );
 	}
 
 	// Authorization code redirect URI and client MUST match, and the code should not have expired
@@ -55,7 +55,7 @@ class WP_REST_OAuth2_Token_Controller extends WP_REST_OAuth2_Server {
 	if ( !$is_valid_redirect_uri || !$is_valid_client || $code_has_expired ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
 
-	  return new OAuth2_Response_Controller( $error );
+	  return new WP_REST_OAuth2_Response_Controller( $error );
 	}
 
 
@@ -64,7 +64,7 @@ class WP_REST_OAuth2_Token_Controller extends WP_REST_OAuth2_Server {
 	if ( !WP_REST_OAuth2_Authorization_Code::revoke_code( $code[ 'code' ] ) ) {
 	  	$error = WP_REST_OAuth2_Error_Helper::get_error( 'server_error' );
 		
-		return new OAuth2_Response_Controller( $error );
+		return new WP_REST_OAuth2_Response_Controller( $error );
 	}
 
 	// Store authorization code to access token (for possible revocation).
@@ -85,7 +85,7 @@ class WP_REST_OAuth2_Token_Controller extends WP_REST_OAuth2_Server {
 		"refresh_token"  => $refresh_token[ 'token' ]
 	);
 
-	return new OAuth2_Response_Controller( $data );
+	return new WP_REST_OAuth2_Response_Controller( $data );
   }
 
 }

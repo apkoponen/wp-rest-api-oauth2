@@ -331,7 +331,7 @@ class WP_REST_OAuth2_Admin {
 						<input type="text" class="regular-text"
 							name="redirect_uri" id="oauth-redirect_uri"
 							value="<?php echo esc_attr( $data['redirect_uri'] ) ?>" />
-						<p class="description"><?php esc_html_e( "Your application's redirect URL. The redirect URI passed with the request token must match the scheme, host, port, and path of this URL.", 'wp_rest_oauth2' ) ?></p>
+						<p class="description"><?php esc_html_e( "Your application's redirect URI. The redirect URI passed to the authorization endpoint must match the scheme, host, port, and path of this URI.", 'wp_rest_oauth2' ) ?></p>
 					</td>
 				</tr>
 			</table>

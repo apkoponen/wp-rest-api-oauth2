@@ -1,0 +1,371 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WP REST OAuth 2.0\n"
+"POT-Creation-Date: 2016-02-18 12:51+0200\n"
+"PO-Revision-Date: 2016-02-18 13:04+0200\n"
+"Last-Translator: A-P Koponen / Versi <info@versi.fi>\n"
+"Language-Team: \n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.4\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;_ex:1,2c;"
+"esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: ..\n"
+
+#: ../admin.php:40
+msgid "Authorized Applications (OAuth 2.0)"
+msgstr "Valtuutetut sovellukset (OAuth 2.0)"
+
+#: ../admin.php:46
+msgid "Application Name"
+msgstr "Sovelluksen nimi"
+
+#: ../admin.php:57
+msgid "Revoke"
+msgstr "Peruuta"
+
+#: ../admin.php:64
+msgid "No applications authorized."
+msgstr "Ei valtuutettuja sovelluksia."
+
+#: ../admin.php:80
+msgid "Token revoked."
+msgstr "Valtuutus peruutettu."
+
+#: ../admin.php:83
+msgid "Unable to revoke token."
+msgstr "Valtuutuksen peruutus ei onnistunut."
+
+#: ../admin.php:86
+msgid "Token not found."
+msgstr "Valtuutusta ei löydetty."
+
+#: ../admin.php:102 ../lib/class-wp-rest-oauth2-admin.php:398
+#: ../lib/class-wp-rest-oauth2-admin.php:430
+msgid "Cheatin&#8217; uh?"
+msgstr "Huijaatko?"
+
+#: ../admin.php:103
+msgid "You are not allowed to edit this token or the token does not exist."
+msgstr ""
+"Sinulla ei ole oikeutta muokata tätä valtuutta tai valtuutta ei ole olemassa."
+
+#: ../lib/class-wp-rest-oauth2-admin.php:21
+msgid "Registered OAuth 2.0 Applications"
+msgstr "Rekisteröidyt OAuth 2.0 sovellukset"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:24
+msgctxt "menu title"
+msgid "Applications (OAuth 2.0)"
+msgstr "Sovellukset (OAuth 2.0)"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:109
+msgid "Registered Applications (OAuth 2.0)"
+msgstr "Rekisteröidyt sovellukset (AOuth 2.0)"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:113
+msgctxt "application"
+msgid "Add New"
+msgstr "Lisää uusi"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:120
+msgid "Deleted application."
+msgstr "Sovellus poistettu."
+
+#: ../lib/class-wp-rest-oauth2-admin.php:128
+msgid "Search Applications"
+msgstr "Hae sovelluksia"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:144
+msgid "Consumer name is required"
+msgstr "Asiakkaan nimi on pakollinen"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:149
+msgid "Consumer description is required"
+msgstr "Asiakkaan kuvaus on pakollinen"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:154
+msgid "Consumer redirect URI is required and must be a valid URL."
+msgstr ""
+"Asiakkaan uudelleenohjaus URI on pakollinen ja sen täytyy olla oikein "
+"muotoiltu URL-osoite."
+
+#: ../lib/class-wp-rest-oauth2-admin.php:234
+msgid "You do not have permission to access this page."
+msgstr "Sinulla ei ole oikeutta katsella tätä sivua."
+
+#: ../lib/class-wp-rest-oauth2-admin.php:244
+msgid "Invalid consumer ID."
+msgstr "Tuntematon asiakkaan ID."
+
+#: ../lib/class-wp-rest-oauth2-admin.php:259
+msgid "Updated application."
+msgstr "Sovellus päivitetty."
+
+#: ../lib/class-wp-rest-oauth2-admin.php:263
+msgid "Regenerated secret."
+msgstr "Salaisuus uudistettu."
+
+#: ../lib/class-wp-rest-oauth2-admin.php:267
+msgid "Successfully created application."
+msgstr "Sovellus luotiin onnistuneesti."
+
+#: ../lib/class-wp-rest-oauth2-admin.php:287
+msgid "Edit Application"
+msgstr "Muokkaa sovellusta"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:287
+msgid "Add Application"
+msgstr "Lisää sovellus"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:308
+msgctxt "field name"
+msgid "Consumer Name"
+msgstr "Asiakkaan nimi"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:314
+msgid "This is shown to users during authorization and in their profile."
+msgstr "Tämä näytetään käyttäjille valtuutuksen yhteydessä ja profiilisivulla."
+
+#: ../lib/class-wp-rest-oauth2-admin.php:319
+msgctxt "field name"
+msgid "Description"
+msgstr "Kuvaus"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:328
+msgctxt "field name"
+msgid "Redirect URI"
+msgstr "Uudelleenohjaus URI"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:334
+msgid ""
+"Your application's redirect URI. The redirect URI passed to the "
+"authorization endpoint must match the scheme, host, port, and path of this "
+"URI."
+msgstr ""
+"Sovelluksesi uudelleenohjaus URI. Uudelleenohjaus URI, joka välitetään "
+"valtuutuspäätepisteelle täytyy olla sama kuin tämä URI."
+
+#: ../lib/class-wp-rest-oauth2-admin.php:343
+msgid "Add Consumer"
+msgstr "Lisää asiakas"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:348
+msgid "Save Consumer"
+msgstr "Tallenna asiakas"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:356
+msgid "OAuth 2.0 Credentials"
+msgstr "OAuth 2.0 tunnukset"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:361
+msgid "Client ID"
+msgstr "Asiakkaan ID"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:369
+msgid "Client Secret"
+msgstr "Asiakkaan salaisuus"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:379
+msgid "Regenerate Secret"
+msgstr "Uudista salaisuus"
+
+#: ../lib/class-wp-rest-oauth2-admin.php:399
+msgid "You are not allowed to delete this application."
+msgstr "Sinulla ei ole oikeutta poistaa tätä sovellusta."
+
+#: ../lib/class-wp-rest-oauth2-admin.php:431
+msgid "You are not allowed to edit this application."
+msgstr "Sinulla ei ole oikeutta muokata tätä sovellusta."
+
+#: ../lib/class-wp-rest-oauth2-listtable.php:31
+msgid "Name"
+msgstr "Nimi"
+
+#: ../lib/class-wp-rest-oauth2-listtable.php:32
+msgid "Description"
+msgstr "Kuvaus"
+
+#: ../lib/class-wp-rest-oauth2-listtable.php:41
+msgid "Select consumer"
+msgstr "Valitse asiakas"
+
+#: ../lib/class-wp-rest-oauth2-listtable.php:52
+msgid "Untitled"
+msgstr "Nimetön"
+
+#: ../lib/class-wp-rest-oauth2-listtable.php:74
+msgid "Edit"
+msgstr "Muokkaa"
+
+#: ../lib/class-wp-rest-oauth2-listtable.php:75
+msgid "Delete"
+msgstr "Poista"
+
+#: ../lib/helpers/class-wp-rest-error-helper.php:43
+msgid ""
+"The request is missing a required parameter, includes an invalid parameter "
+"value, includes a parameter more than once, or is otherwise malformed."
+msgstr ""
+"Pyynnöstä puuttuu vaadittu parametri, se sisältää virheellisen parametrin "
+"arvon,  se sisältää saman parametrin useammin kuin kerran tai on muuten "
+"virheellinen."
+
+#: ../lib/helpers/class-wp-rest-error-helper.php:44
+msgid ""
+"The client is not authorized to request an authorization code using this "
+"method."
+msgstr "Asiakkaalla ei ole oikeutta pyytää valtuutuskoodia tällä metodilla."
+
+#: ../lib/helpers/class-wp-rest-error-helper.php:45
+msgid "The resource owner or authorization server denied the request."
+msgstr "Resurssien omistaja tai valtuutuspalvelin eväsi pyynnön."
+
+#: ../lib/helpers/class-wp-rest-error-helper.php:46
+msgid ""
+"The authorization server does not support obtaining an authorization code "
+"using this method."
+msgstr "Valtuutuspalvelin ei tue valtuutuskoodin hankkimista tällä tavalla."
+
+#: ../lib/helpers/class-wp-rest-error-helper.php:47
+msgid "The requested scope is invalid, unknown, or malformed."
+msgstr "Pyynnön laajuus on virheellinen, tuntematon tai väärin muotoiltu."
+
+#: ../lib/helpers/class-wp-rest-error-helper.php:48
+msgid ""
+"The authorization server encountered an unexpected condition that prevented "
+"it from fulfilling the request."
+msgstr ""
+"Valtuutuspalvelin kohtasi odottamattoman ongelman, joka esti pyynnön "
+"täyttämisen."
+
+#: ../lib/helpers/class-wp-rest-error-helper.php:49
+msgid ""
+"The authorization server is currently unable to handle the request due to a "
+"temporary overloading or maintenance of the server."
+msgstr ""
+"Valtuutuspalvelin ei tällä hetkellä voi käsitellä pyyntöä hetkellisen "
+"liiallisen kuorman tai ylläpitotoimien vuoksi."
+
+#: ../lib/helpers/class-wp-rest-error-helper.php:50
+msgid ""
+"Client authentication failed (e.g., unknown client, no client authentication "
+"included, or unsupported authentication method)."
+msgstr ""
+"Asiakkaan todennus epäonnistui (esim. tuntematon asiakas, asiakkaan "
+"tunnukset puuttuivat, tai todennustapaa ei tueta)."
+
+#: ../lib/helpers/class-wp-rest-error-helper.php:51
+msgid ""
+"The provided authorization grant (e.g., authorization code, resource owner "
+"credentials) or refresh token is invalid, expired, revoked, does not match "
+"the redirection URI used in the authorization request, or was issued to "
+"another client."
+msgstr ""
+"Annettu valtuutuslupa (esim. valtuutuskoodi, resurssin omistajan tunnukset) "
+"tai päivitysvaltuus on virheellinen, vanhentunut, peruutettu, ei vastaa "
+"valtuutuspyynnön uudelleenohjaus URI:a, tai on myönnetty toiselle "
+"asiakkaalle."
+
+#: ../lib/helpers/class-wp-rest-error-helper.php:52
+msgid ""
+"The authenticated client is not authorized to use this authorization grant "
+"type."
+msgstr ""
+"Todennettu asiakas ei ole valtuutettu käyttämään tätä valuutuslupatyyppiä."
+
+#: ../lib/helpers/class-wp-rest-error-helper.php:53
+msgid ""
+"The authorization grant type is not supported by the authorization server."
+msgstr "Valtuutuspalvelin ei tue valtuutuslupatyyppiä."
+
+#: ../lib/helpers/class-wp-rest-error-helper.php:54
+msgid "The user credentials were incorrect."
+msgstr "Käyttäjän tunnukset olivat väärät."
+
+#: ../lib/storage/class-wp-rest-oauth-client.php:17
+#: ../lib/storage/class-wp-rest-oauth2-token.php:17
+msgid "Overridden class must implement get_type"
+msgstr "Ylikirjoitetun luokan täytyy toteuttaa get_type."
+
+#: ../lib/storage/class-wp-rest-oauth-client.php:95
+msgid "Could not update client metadata."
+msgstr "Asiakkaan meta-tietoja ei voitu päivittää."
+
+#: ../lib/storage/class-wp-rest-oauth-client.php:124
+msgid "Client ID is not valid."
+msgstr "Asiakkaan ID on virheellinen."
+
+#: ../lib/storage/class-wp-rest-oauth-client.php:159
+msgid "Consumer Key is invalid"
+msgstr "Asiakkaan avain on virheellinen."
+
+#: ../lib/storage/class-wp-rest-oauth2-authorization-code.php:46
+msgid "The client redirect URI does not match the provided URI."
+msgstr "Asiakkaan uudelleenohjaus URI ei vastaa annettua URI:a."
+
+#: ../lib/storage/class-wp-rest-oauth2-client.php:43
+msgid "OAuth 2.0 does not use Client Keys. Use get_by_client_id instead."
+msgstr ""
+"OAuth 2. 0 ei tue asiakkaan avaimia. Käytä get_by_client_id:tä tämän sijasta."
+
+#: ../lib/storage/class-wp-rest-oauth2-client.php:74
+msgid "Client ID is invalid"
+msgstr "Asiakkaan ID on virheellinen."
+
+#: ../lib/storage/class-wp-rest-oauth2-token.php:31
+#: ../lib/storage/class-wp-rest-oauth2-token.php:146
+msgid "Token does not exist."
+msgstr "Valtuutta ei ole olemassa."
+
+#: ../lib/storage/class-wp-rest-oauth2-token.php:52
+#: ../lib/storage/class-wp-rest-oauth2-token.php:166
+msgid "Token with given post ID does not exist."
+msgstr "Annetulla artikkelin ID:llä ei löydy valtuutta."
+
+#: ../lib/storage/class-wp-rest-oauth2-token.php:59
+msgid "Token has expired."
+msgstr "Valtuus on vanhentunut."
+
+#: ../lib/storage/class-wp-rest-oauth2-token.php:118
+msgid "Could not save new token."
+msgstr "Uutta valtuutta ei voitu tallentaa."
+
+#: ../oauth2-server.php:127
+msgid "Consumers"
+msgstr "Asiakkaat"
+
+#: ../oauth2-server.php:128
+msgid "Consumer"
+msgstr "Asiaka"
+
+#: ../oauth2-server.php:139
+msgid "Access tokens"
+msgstr "Pääsyvaltuudet"
+
+#: ../oauth2-server.php:140
+msgid "Access token"
+msgstr "Pääsyvaltuu"
+
+#: ../oauth2-server.php:151
+msgid "Refresh tokens"
+msgstr "Päivitysvaltuudet"
+
+#: ../oauth2-server.php:152
+msgid "Refresh token"
+msgstr "Päivitysvaltuus"
+
+#~ msgid ""
+#~ "Your application's redirect URL. The redirect URI passed with the request "
+#~ "token must match the scheme, host, port, and path of this URL."
+#~ msgstr ""
+#~ "Sovelluksesi uudelleenohjaus URI. Uudelleenohjaus URI, joka välitetään "
+#~ "valtuutus-päätepisteelle"
