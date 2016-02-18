@@ -1,9 +1,10 @@
 <?php
 /**
+ * OAuth 2.0 authenticator that checks access tokens and grants access based on them.
+ *
  * Based on WP REST API - OAuth 1.0a Server (https://github.com/WP-API/OAuth1).
  * Used under GPL3 license.
  */
-
 class WP_REST_OAuth2_Authenticator {
 
 	/**

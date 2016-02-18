@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * OAuth 2.0 Authorization code model.
+ */
 abstract class WP_REST_OAuth2_Authorization_Code {
 
   const AUTHORIZATION_CODE_LENGTH = 32;
@@ -41,7 +43,7 @@ abstract class WP_REST_OAuth2_Authorization_Code {
 
 	// Check that redirect_uri matches
 	if( !empty( $consumer->redirect_uri ) &&  $redirect_uri !== $consumer->redirect_uri ) {
-	  return new WP_Error( 'oauth2_redirect_uri_mismatch', __( 'The client redirect URI does not match the provided URI.', 'rest_oauth2' ), array( 'status' => 400 ) );
+	  return new WP_Error( 'oauth2_redirect_uri_mismatch', __( 'The client redirect URI does not match the provided URI.', 'wp_rest_oauth2' ), array( 'status' => 400 ) );
 	}
 
 	// Setup data for filtering

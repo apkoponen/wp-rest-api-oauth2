@@ -1,9 +1,10 @@
 <?php
 /**
+ * Base Client model.
+ *
  * Based on WP REST API - OAuth 1.0a Server (https://github.com/WP-API/OAuth1).
  * Used under GPL3 license.
  */
-
 abstract class WP_REST_OAuth_Client {
 	/**
 	 * Get the client type.
@@ -13,7 +14,7 @@ abstract class WP_REST_OAuth_Client {
 	 * @return string
 	 */
 	protected static function get_type() {
-		return new WP_Error( 'rest_client_missing_type', __( 'Overridden class must implement get_type', 'rest_oauth2' ) );
+		return new WP_Error( 'rest_client_missing_type', __( 'Overridden class must implement get_type', 'wp_rest_oauth2' ) );
 	}
 
 	/**
@@ -120,7 +121,7 @@ abstract class WP_REST_OAuth_Client {
 	public static function get( $id ) {
 		$post = get_post( $id );
 		if ( empty( $id ) || empty( $post ) || $post->post_type !== 'json_consumer' ) {
-			return new WP_Error( 'rest_oauth2_invalid_id', __( 'Client ID is not valid.', 'rest_oauth2' ), array( 'status' => 404 ) );
+			return new WP_Error( 'rest_oauth2_invalid_id', __( 'Client ID is not valid.', 'wp_rest_oauth2' ), array( 'status' => 404 ) );
 		}
 
 		$class = function_exists( 'get_called_class' ) ? get_called_class() : self::get_called_class();
@@ -155,7 +156,7 @@ abstract class WP_REST_OAuth_Client {
 		) );
 
 		if ( empty( $consumers ) || empty( $consumers[0] ) ) {
-			return new WP_Error( 'json_consumer_notfound', __( 'Consumer Key is invalid', 'rest_oauth2' ), array( 'status' => 401 ) );
+			return new WP_Error( 'json_consumer_notfound', __( 'Consumer Key is invalid', 'wp_rest_oauth2' ), array( 'status' => 401 ) );
 		}
 
 		return $consumers[0];

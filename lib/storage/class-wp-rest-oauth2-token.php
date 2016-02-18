@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * OAuth 2.0 Token base model.
+ */
 abstract class WP_REST_OAuth2_Token {
 
   const TOKEN_KEY_LENGTH = 32;
@@ -12,7 +14,7 @@ abstract class WP_REST_OAuth2_Token {
    * @return string
    */
   protected static function get_type() {
-	  return new WP_Error( 'json_oauth2_token_missing_type', __( 'Overridden class must implement get_type', 'rest_oauth2' ) );
+	  return new WP_Error( 'json_oauth2_token_missing_type', __( 'Overridden class must implement get_type', 'wp_rest_oauth2' ) );
   }
 
   /**
@@ -26,7 +28,7 @@ abstract class WP_REST_OAuth2_Token {
 	$post_id = $class::get_post_id_by_title( $oauth_token );
 
 	if ( empty( $post_id ) ) {
-	  return new WP_Error( 'rest_oauth2_token_not_exists', __( 'Token does not exist.', 'rest_oauth2' ), array( 'status' => 401 ) );
+	  return new WP_Error( 'rest_oauth2_token_not_exists', __( 'Token does not exist.', 'wp_rest_oauth2' ), array( 'status' => 401 ) );
 	}
 
 	$token = $class::get_token_by_id( $post_id );
@@ -47,14 +49,14 @@ abstract class WP_REST_OAuth2_Token {
 	$post = get_post( $post_id );
 
 	if ( !$class::post_is_token( $post ) ) {
-	  return new WP_Error( 'rest_oauth2_token_id_not_valid', __( 'Token with given post ID does not exist.', 'rest_oauth2' ), array( 'status' => 401 ) );
+	  return new WP_Error( 'rest_oauth2_token_id_not_valid', __( 'Token with given post ID does not exist.', 'wp_rest_oauth2' ), array( 'status' => 401 ) );
 	}
 
 	$expires = intval( get_post_meta( $post_id, 'expires', true ) ); // 0 on false
 
 	if( $expires > 0 && $expires < time() ) {
 	  $class::revoke_token_by_id( $post_id );
-	  return new WP_Error( 'rest_oauth2_token_expired', __( 'Token has expired.', 'rest_oauth2' ), array( 'status' => 401 ) );
+	  return new WP_Error( 'rest_oauth2_token_expired', __( 'Token has expired.', 'wp_rest_oauth2' ), array( 'status' => 401 ) );
 	}
 
 	// Populate token data
@@ -113,7 +115,7 @@ abstract class WP_REST_OAuth2_Token {
 	));
 
 	if( empty( $new_id ) || is_wp_error( $new_id ) ) {
-	  return new WP_Error( 'rest_oauth2_token_save_failed', __( 'Could not save new token.', 'rest_oauth2' ), array( 'status' => 401 ) );
+	  return new WP_Error( 'rest_oauth2_token_save_failed', __( 'Could not save new token.', 'wp_rest_oauth2' ), array( 'status' => 401 ) );
 	}
 
 	// Add metas
@@ -141,7 +143,7 @@ abstract class WP_REST_OAuth2_Token {
 	$post_id = $class::get_post_id_by_title( $oauth_token );
 
 	if ( empty( $post_id ) ) {
-	  return new WP_Error( 'rest_oauth2_token_not_exists', __( 'Token does not exist.', 'rest_oauth2' ), array( 'status' => 401 ) );
+	  return new WP_Error( 'rest_oauth2_token_not_exists', __( 'Token does not exist.', 'wp_rest_oauth2' ), array( 'status' => 401 ) );
 	}
 
 	$result = $class::revoke_token_by_id( $post_id );
@@ -161,7 +163,7 @@ abstract class WP_REST_OAuth2_Token {
 	$post = get_post( $post_id );
 
 	if ( !$class::post_is_token( $post ) ) {
-	  return new WP_Error( 'rest_oauth2_token_id_not_valid', __( 'Token with given post ID does not exist.', 'rest_oauth2' ), array( 'status' => 401 ) );
+	  return new WP_Error( 'rest_oauth2_token_id_not_valid', __( 'Token with given post ID does not exist.', 'wp_rest_oauth2' ), array( 'status' => 401 ) );
 	}
 
 	return wp_delete_post( $post_id, true );

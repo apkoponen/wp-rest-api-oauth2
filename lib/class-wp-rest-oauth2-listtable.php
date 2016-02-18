@@ -1,10 +1,12 @@
 <?php
 /**
+ * OAuth 2.0 list table for listing consumers on admin
+ *
  * Based on WP REST API - OAuth 1.0a Server (https://github.com/WP-API/OAuth1).
  * Used under GPL3 license.
  */
-
 class WP_REST_OAuth2_ListTable extends WP_List_Table {
+
 	public function prepare_items() {
 		$paged = $this->get_pagenum();
 
@@ -23,20 +25,11 @@ class WP_REST_OAuth2_ListTable extends WP_List_Table {
 		$this->set_pagination_args($pagination_args);
 	}
 
-	/**
-	 * Get a list of columns for the list table.
-	 *
-	 * @since  3.1.0
-	 * @access public
-	 *
-	 * @return array Array in which the key is the ID of the column,
-	 *               and the value is the description.
-	 */
 	public function get_columns() {
 		$c = array(
 			'cb'          => '<input type="checkbox" />',
-			'name'        => __( 'Name', 'rest_oauth2' ),
-			'description' => __( 'Description', 'rest_oauth2' ),
+			'name'        => __( 'Name', 'wp_rest_oauth2' ),
+			'description' => __( 'Description', 'wp_rest_oauth2' ),
 		);
 
 		return $c;
@@ -45,7 +38,7 @@ class WP_REST_OAuth2_ListTable extends WP_List_Table {
 	public function column_cb( $item ) {
 		?>
 		<label class="screen-reader-text"
-			for="cb-select-<?php echo esc_attr( $item->ID ) ?>"><?php esc_html_e( 'Select consumer', 'rest_oauth2' ); ?></label>
+			for="cb-select-<?php echo esc_attr( $item->ID ) ?>"><?php esc_html_e( 'Select consumer', 'wp_rest_oauth2' ); ?></label>
 
 		<input id="cb-select-<?php echo esc_attr( $item->ID ) ?>" type="checkbox"
 			name="consumers[]" value="<?php echo esc_attr( $item->ID ) ?>" />
@@ -56,7 +49,7 @@ class WP_REST_OAuth2_ListTable extends WP_List_Table {
 	protected function column_name( $item ) {
 		$title = get_the_title( $item->ID );
 		if ( empty( $title ) ) {
-			$title = '<em>' . esc_html__( 'Untitled', 'rest_oauth2' ) . '</em>';
+			$title = '<em>' . esc_html__( 'Untitled', 'wp_rest_oauth2' ) . '</em>';
 		}
 
 		$edit_link = add_query_arg(
@@ -78,8 +71,8 @@ class WP_REST_OAuth2_ListTable extends WP_List_Table {
 		$delete_link = wp_nonce_url( $delete_link, 'rest-oauth2-delete:' . $item->ID );
 
 		$actions = array(
-			'edit' => sprintf( '<a href="%s">%s</a>', esc_url( $edit_link ), esc_html__( 'Edit', 'rest_oauth2' ) ),
-			'delete' => sprintf( '<a href="%s">%s</a>', esc_url( $delete_link ), esc_html__( 'Delete', 'rest_oauth2' ) ),
+			'edit' => sprintf( '<a href="%s">%s</a>', esc_url( $edit_link ), esc_html__( 'Edit', 'wp_rest_oauth2' ) ),
+			'delete' => sprintf( '<a href="%s">%s</a>', esc_url( $delete_link ), esc_html__( 'Delete', 'wp_rest_oauth2' ) ),
 		);
 		$action_html = $this->row_actions( $actions );
 

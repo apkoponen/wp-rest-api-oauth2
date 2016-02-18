@@ -1,9 +1,10 @@
 <?php
 /**
+ * OAuth 2.0 specific Client model.
+ * 
  * Based on WP REST API - OAuth 1.0a Server (https://github.com/WP-API/OAuth1).
  * Used under GPL3 license.
  */
-
 class WP_REST_OAuth2_Client extends WP_REST_OAuth_Client {
 	const CONSUMER_KEY_LENGTH = 12;
 	const CONSUMER_SECRET_LENGTH = 32;
@@ -39,7 +40,7 @@ class WP_REST_OAuth2_Client extends WP_REST_OAuth_Client {
 	 * @return \WP_Error
 	 */
 	public static function get_by_key($key) {
-	  return new WP_Error( 'rest_client_keys_not_used', __( 'OAuth 2.0 does not use Client Keys. Use get_by_client_id instead.', 'rest_oauth2' ) );
+	  return new WP_Error( 'rest_client_keys_not_used', __( 'OAuth 2.0 does not use Client Keys. Use get_by_client_id instead.', 'wp_rest_oauth2' ) );
 	}
 
 	/**
@@ -70,7 +71,7 @@ class WP_REST_OAuth2_Client extends WP_REST_OAuth_Client {
 		) );
 
 		if ( empty( $consumers ) || empty( $consumers[0] ) ) {
-			return new WP_Error( 'json_consumer_notfound', __( 'Client ID is invalid', 'rest_oauth2' ), array( 'status' => 401 ) );
+			return new WP_Error( 'json_consumer_notfound', __( 'Client ID is invalid', 'wp_rest_oauth2' ), array( 'status' => 401 ) );
 		}
 
 		return $consumers[0];

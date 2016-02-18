@@ -18,10 +18,10 @@ class WP_REST_OAuth2_Admin {
 
 		$hook = add_users_page(
 			// Page title
-			__( 'Registered OAuth 2.0 Applications', 'rest_oauth2' ),
+			__( 'Registered OAuth 2.0 Applications', 'wp_rest_oauth2' ),
 
 			// Menu title
-			_x( 'Applications (OAuth 2.0)', 'menu title', 'rest_oauth2' ),
+			_x( 'Applications (OAuth 2.0)', 'menu title', 'wp_rest_oauth2' ),
 
 			// Capability
 			'list_users',
@@ -106,18 +106,18 @@ class WP_REST_OAuth2_Admin {
 		<div class="wrap">
 			<h2>
 				<?php
-				esc_html_e( 'Registered Applications (OAuth 2.0)', 'rest_oauth2' );
+				esc_html_e( 'Registered Applications (OAuth 2.0)', 'wp_rest_oauth2' );
 
 				if ( current_user_can( 'create_users' ) ): ?>
 					<a href="<?php echo esc_url( self::get_url( 'action=add' ) ) ?>"
-						class="add-new-h2"><?php echo esc_html_x( 'Add New', 'application', 'rest_oauth2' ); ?></a>
+						class="add-new-h2"><?php echo esc_html_x( 'Add New', 'application', 'wp_rest_oauth2' ); ?></a>
 				<?php
 				endif;
 				?>
 			</h2>
 			<?php
 			if ( ! empty( $_GET['deleted'] ) ) {
-				echo '<div id="message" class="updated"><p>' . esc_html__( 'Deleted application.', 'rest_oauth2' ) . '</p></div>';
+				echo '<div id="message" class="updated"><p>' . esc_html__( 'Deleted application.', 'wp_rest_oauth2' ) . '</p></div>';
 			}
 			?>
 
@@ -125,7 +125,7 @@ class WP_REST_OAuth2_Admin {
 
 			<form action="" method="get">
 
-				<?php $wp_list_table->search_box( __( 'Search Applications', 'rest_oauth2' ), 'rest_oauth2' ); ?>
+				<?php $wp_list_table->search_box( __( 'Search Applications', 'wp_rest_oauth2' ), 'wp_rest_oauth2' ); ?>
 
 				<?php $wp_list_table->display(); ?>
 
@@ -141,17 +141,17 @@ class WP_REST_OAuth2_Admin {
 		$valid = array();
 
 		if ( empty( $params['name'] ) ) {
-			return new WP_Error( 'rest_oauth2_missing_name', __( 'Consumer name is required', 'rest_oauth2' ) );
+			return new WP_Error( 'rest_oauth2_missing_name', __( 'Consumer name is required', 'wp_rest_oauth2' ) );
 		}
 		$valid['name'] = wp_filter_post_kses( $params['name'] );
 
 		if ( empty( $params['description'] ) ) {
-			return new WP_Error( 'rest_oauth2_missing_description', __( 'Consumer description is required', 'rest_oauth2' ) );
+			return new WP_Error( 'rest_oauth2_missing_description', __( 'Consumer description is required', 'wp_rest_oauth2' ) );
 		}
 		$valid['description'] = wp_filter_post_kses( $params['description'] );
 
 		if ( empty( $params['redirect_uri'] ) ) {
-			return new WP_Error( 'rest_oauth2_missing_description', __( 'Consumer redirect URI is required and must be a valid URL.', 'rest_oauth2' ) );
+			return new WP_Error( 'rest_oauth2_missing_description', __( 'Consumer redirect URI is required and must be a valid URL.', 'wp_rest_oauth2' ) );
 		}
 		if ( ! empty( $params['redirect_uri'] ) ) {
 			$valid['redirect_uri'] = $params['redirect_uri'];
@@ -231,7 +231,7 @@ class WP_REST_OAuth2_Admin {
 	 */
 	public static function render_edit_page() {
 		if ( ! current_user_can( 'edit_users' ) ) {
-			wp_die( __( 'You do not have permission to access this page.', 'rest_oauth2' ) );
+			wp_die( __( 'You do not have permission to access this page.', 'wp_rest_oauth2' ) );
 		}
 
 		// Are we editing?
@@ -241,7 +241,7 @@ class WP_REST_OAuth2_Admin {
 			$id = absint( $_REQUEST['id'] );
 			$consumer = WP_REST_OAuth2_Client::get( $id );
 			if ( is_wp_error( $consumer ) || empty( $consumer ) ) {
-				wp_die( __( 'Invalid consumer ID.', 'rest_oauth2' ) );
+				wp_die( __( 'Invalid consumer ID.', 'wp_rest_oauth2' ) );
 			}
 
 			$form_action = self::get_url( array( 'action' => 'edit', 'id' => $id ) );
@@ -256,15 +256,15 @@ class WP_REST_OAuth2_Admin {
 		if ( ! empty( $_GET['did_action'] ) ) {
 			switch ( $_GET['did_action'] ) {
 				case 'edit':
-					$messages[] = __( 'Updated application.', 'rest_oauth2' );
+					$messages[] = __( 'Updated application.', 'wp_rest_oauth2' );
 					break;
 
 				case 'regenerate':
-					$messages[] = __( 'Regenerated secret.', 'rest_oauth2' );
+					$messages[] = __( 'Regenerated secret.', 'wp_rest_oauth2' );
 					break;
 
 				default:
-					$messages[] = __( 'Successfully created application.', 'rest_oauth2' );
+					$messages[] = __( 'Successfully created application.', 'wp_rest_oauth2' );
 					break;
 			}
 		}
@@ -284,7 +284,7 @@ class WP_REST_OAuth2_Admin {
 
 		// Header time!
 		global $title, $parent_file, $submenu_file;
-		$title = $consumer ? __( 'Edit Application', 'rest_oauth2' ) : __( 'Add Application', 'rest_oauth2' );
+		$title = $consumer ? __( 'Edit Application', 'wp_rest_oauth2' ) : __( 'Add Application', 'wp_rest_oauth2' );
 		$parent_file = 'users.php';
 		$submenu_file = self::BASE_SLUG;
 
@@ -305,18 +305,18 @@ class WP_REST_OAuth2_Admin {
 			<table class="form-table">
 				<tr>
 					<th scope="row">
-						<label for="oauth-name"><?php echo esc_html_x( 'Consumer Name', 'field name', 'rest_oauth2' ) ?></label>
+						<label for="oauth-name"><?php echo esc_html_x( 'Consumer Name', 'field name', 'wp_rest_oauth2' ) ?></label>
 					</th>
 					<td>
 						<input type="text" class="regular-text"
 							name="name" id="oauth-name"
 							value="<?php echo esc_attr( $data['name'] ) ?>" />
-						<p class="description"><?php esc_html_e( 'This is shown to users during authorization and in their profile.', 'rest_oauth2' ) ?></p>
+						<p class="description"><?php esc_html_e( 'This is shown to users during authorization and in their profile.', 'wp_rest_oauth2' ) ?></p>
 					</td>
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="oauth-description"><?php echo esc_html_x( 'Description', 'field name', 'rest_oauth2' ) ?></label>
+						<label for="oauth-description"><?php echo esc_html_x( 'Description', 'field name', 'wp_rest_oauth2' ) ?></label>
 					</th>
 					<td>
 						<textarea class="regular-text" name="description" id="oauth-description"
@@ -325,13 +325,13 @@ class WP_REST_OAuth2_Admin {
 				</tr>
 				<tr>
 					<th scope="row">
-						<label for="oauth-redirect_uri"><?php echo esc_html_x( 'Redirect URI', 'field name', 'rest_oauth2' ) ?></label>
+						<label for="oauth-redirect_uri"><?php echo esc_html_x( 'Redirect URI', 'field name', 'wp_rest_oauth2' ) ?></label>
 					</th>
 					<td>
 						<input type="text" class="regular-text"
 							name="redirect_uri" id="oauth-redirect_uri"
 							value="<?php echo esc_attr( $data['redirect_uri'] ) ?>" />
-						<p class="description"><?php esc_html_e( "Your application's redirect URL. The redirect URI passed with the request token must match the scheme, host, port, and path of this URL.", 'rest_oauth2' ) ?></p>
+						<p class="description"><?php esc_html_e( "Your application's redirect URL. The redirect URI passed with the request token must match the scheme, host, port, and path of this URL.", 'wp_rest_oauth2' ) ?></p>
 					</td>
 				</tr>
 			</table>
@@ -340,12 +340,12 @@ class WP_REST_OAuth2_Admin {
 
 			if ( empty( $consumer ) ) {
 				wp_nonce_field( 'rest-oauth2-add' );
-				submit_button( __( 'Add Consumer', 'rest_oauth2' ) );
+				submit_button( __( 'Add Consumer', 'wp_rest_oauth2' ) );
 			}
 			else {
 				echo '<input type="hidden" name="id" value="' . esc_attr( $consumer->ID ) . '" />';
 				wp_nonce_field( 'rest-oauth2-edit-' . $consumer->ID );
-				submit_button( __( 'Save Consumer', 'rest_oauth2' ) );
+				submit_button( __( 'Save Consumer', 'wp_rest_oauth2' ) );
 			}
 
 			?>
@@ -353,12 +353,12 @@ class WP_REST_OAuth2_Admin {
 
 		<?php if ( ! empty( $consumer ) ): ?>
 			<form method="post" action="<?php echo esc_url( $regenerate_action ) ?>">
-				<h3><?php esc_html_e( 'OAuth 2.0 Credentials', 'rest_oauth2' ) ?></h3>
+				<h3><?php esc_html_e( 'OAuth 2.0 Credentials', 'wp_rest_oauth2' ) ?></h3>
 
 				<table class="form-table">
 					<tr>
 						<th scope="row">
-							<?php esc_html_e( 'Client ID', 'rest_oauth2' ) ?>
+							<?php esc_html_e( 'Client ID', 'wp_rest_oauth2' ) ?>
 						</th>
 						<td>
 							<code><?php echo esc_html( $consumer->client_id ) ?></code>
@@ -366,7 +366,7 @@ class WP_REST_OAuth2_Admin {
 					</tr>
 					<tr>
 						<th scope="row">
-							<?php esc_html_e( 'Client Secret', 'rest_oauth2' ) ?>
+							<?php esc_html_e( 'Client Secret', 'wp_rest_oauth2' ) ?>
 						</th>
 						<td>
 							<code><?php echo esc_html( $consumer->client_secret ) ?></code>
@@ -376,7 +376,7 @@ class WP_REST_OAuth2_Admin {
 
 				<?php
 				wp_nonce_field( 'rest-oauth2-regenerate:' . $consumer->ID );
-				submit_button( __( 'Regenerate Secret', 'rest_oauth2' ), 'delete' );
+				submit_button( __( 'Regenerate Secret', 'wp_rest_oauth2' ), 'delete' );
 				?>
 			</form>
 		<?php endif ?>
@@ -395,8 +395,8 @@ class WP_REST_OAuth2_Admin {
 
 		if ( ! current_user_can( 'delete_post', $id ) ) {
 			wp_die(
-				'<h1>' . __( 'Cheatin&#8217; uh?', 'rest_oauth2' ) . '</h1>' .
-				'<p>' . __( 'You are not allowed to delete this application.', 'rest_oauth2' ) . '</p>',
+				'<h1>' . __( 'Cheatin&#8217; uh?', 'wp_rest_oauth2' ) . '</h1>' .
+				'<p>' . __( 'You are not allowed to delete this application.', 'wp_rest_oauth2' ) . '</p>',
 				403
 			);
 		}
@@ -427,8 +427,8 @@ class WP_REST_OAuth2_Admin {
 
 		if ( ! current_user_can( 'edit_post', $id ) ) {
 			wp_die(
-				'<h1>' . __( 'Cheatin&#8217; uh?', 'rest_oauth2' ) . '</h1>' .
-				'<p>' . __( 'You are not allowed to edit this application.', 'rest_oauth2' ) . '</p>',
+				'<h1>' . __( 'Cheatin&#8217; uh?', 'wp_rest_oauth2' ) . '</h1>' .
+				'<p>' . __( 'You are not allowed to edit this application.', 'wp_rest_oauth2' ) . '</p>',
 				403
 			);
 		}

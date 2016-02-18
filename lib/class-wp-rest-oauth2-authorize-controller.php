@@ -2,7 +2,6 @@
 /**
  * WP_REST_OAuth2_Authorize_Controller is used for authorizing a user using the web based Auth Code grant type.
  * 
- * @todo Add redirect URI check and validation
  */
 class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 

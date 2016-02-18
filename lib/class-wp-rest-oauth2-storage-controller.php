@@ -1,6 +1,7 @@
 <?php
 /**
  * OAuth2 Storage Controller
+ * 
  * This class is a simple storage class that utilizes $wpdb and WordPress's options API
  */
 class WP_REST_OAuth2_Storage_Controller extends WP_REST_OAuth2_Server {

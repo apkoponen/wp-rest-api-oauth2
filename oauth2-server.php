@@ -31,7 +31,7 @@ add_action( 'rest_api_init', array( 'WP_REST_OAuth2_Server', 'register_routes' )
 add_action( 'init', array( 'WP_REST_OAuth2_Server', 'register_storage' ) );
 add_filter( 'rest_index', array( 'WP_REST_OAuth2_Server', 'add_routes_to_index' ) );
 add_action( 'rest_api_init', array( 'WP_REST_OAuth2_Server', 'init_autheticator' ) );
-
+add_action('plugins_loaded', array( 'WP_REST_OAuth2_Server', 'load_textdomain' ) );
 
 /**
  * OAuth2 Rest Server Main Class.
@@ -124,8 +124,8 @@ class WP_REST_OAuth2_Server {
   static function register_storage() {
 	register_post_type( 'json_consumer', array(
 		'labels' => array(
-			'name' => __( 'Consumers', 'wp-oauth2' ),
-			'singular_name' => __( 'Consumer', 'wp-oauth2' ),
+			'name' => __( 'Consumers', 'wp_rest_oauth2' ),
+			'singular_name' => __( 'Consumer', 'wp_rest_oauth2' ),
 		),
 		'public' => false,
 		'hierarchical' => false,
@@ -136,8 +136,8 @@ class WP_REST_OAuth2_Server {
 
 	register_post_type( 'oauth2_access_token', array(
 		'labels' => array(
-			'name' => __( 'Access tokens', 'wp-oauth2' ),
-			'singular_name' => __( 'Access token', 'wp-oauth2' ),
+			'name' => __( 'Access tokens', 'wp_rest_oauth2' ),
+			'singular_name' => __( 'Access token', 'wp_rest_oauth2' ),
 		),
 		'public' => false,
 		'hierarchical' => false,
@@ -148,8 +148,8 @@ class WP_REST_OAuth2_Server {
 
 	register_post_type( 'oauth2_refresh_token', array(
 		'labels' => array(
-			'name' => __( 'Refresh tokens', 'wp-oauth2' ),
-			'singular_name' => __( 'Refresh token', 'wp-oauth2' ),
+			'name' => __( 'Refresh tokens', 'wp_rest_oauth2' ),
+			'singular_name' => __( 'Refresh token', 'wp_rest_oauth2' ),
 		),
 		'public' => false,
 		'hierarchical' => false,
@@ -166,5 +166,12 @@ class WP_REST_OAuth2_Server {
 	include_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-authenticator.php' );
 
 	self::$authenticator = new WP_REST_OAuth2_Authenticator();
+  }
+
+  /**
+   * Load textdomain
+   */
+  function load_textdomain() {
+	load_plugin_textdomain( 'wp_rest_oauth2', false, dirname( plugin_basename(__FILE__) ) . '/languages/' );
   }
 }

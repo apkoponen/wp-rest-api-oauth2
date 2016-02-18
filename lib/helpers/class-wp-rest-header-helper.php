@@ -1,11 +1,9 @@
 <?php
 /**
+ * Helpers for header handling.
+ *
  * Based on WP REST API - OAuth 1.0a Server (https://github.com/WP-API/OAuth1).
  * Used under GPL3 license.
- */
-
-/**
- * Helpers for header handling
  */
 class WP_REST_OAuth2_Header_Helper {
 
