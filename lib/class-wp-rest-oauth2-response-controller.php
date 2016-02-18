@@ -8,4 +8,4 @@
  *
  * Extending the WP_REST_Response class allows us to EXTEND at a later time with out restructuring
  */
-class OAuth2_Response_Controller extends WP_REST_Response {}
+class WP_REST_OAuth2_Response_Controller extends WP_REST_Response {}

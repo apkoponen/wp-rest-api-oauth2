@@ -1,10 +1,12 @@
 <?php 
 /**
- * @todo 
+ * WP_REST_OAuth2_Authorize_Controller is used for authorizing a user using the web based Auth Code grant type.
+ * 
+ * @todo Add redirect URI check and validation
  */
-class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
+class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 
-  /**
+ /**
    * State property
    * @var string
    */
@@ -25,12 +27,12 @@ class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
 		$required_missing = true;
 	  }
 	}
-	
+
 	if ( $required_missing ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
 	  return new OAuth2_Response_Controller( $error );
 	}
-    
+
     // Check id client ID is valid.
     // We may be able to move this up in the first check as well
     if ( ! OAuth2_Storage_Controller::validateClient( $request[ 'client_id' ] ) ) {
@@ -50,21 +52,21 @@ class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
     if ( ! $user_id ) {
       global $wp;
       $current_url = add_query_arg( $wp->query_string . http_build_query( $request->get_params() ), '', site_url( $wp->request ) );
-      wp_redirect( wp_login_url( $current_url ) ); 
-      
-      exit; 
+      wp_redirect( wp_login_url( $current_url ) );
+
+      exit;
     }
 
     $code = WP_REST_OAuth2_Authorization_Code::generate_code( $request[ 'client_id' ], $user_id, $request[ 'redirect_uri' ], time() + 30 );
 
 	if( is_wp_error( $code ) ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request', $code);
-	  
+
       return new OAuth2_Response_Controller( $error );
 	}
-	
+
     // if we made it this far, everything has checked out and we can begin our logged in check and authorize process.
-    $data = array( 
+    $data = array(
       'code' => $code[ 'code' ],
     );
 
@@ -76,9 +78,9 @@ class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
 	$redirect_url = add_query_arg($data, $request->get_param('redirect_uri'));
 	wp_redirect($redirect_url);
 	exit;
-    
+
     return new OAuth2_Response_Controller( $data );
-  } 
+  }
 
   /**
    * Validates the response type
@@ -86,7 +88,7 @@ class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
    * According to OAuth2 Draft, the only supported response type for an auth code flow is code.
    *
    * @see  https://tools.ietf.org/html/draft-ietf-oauth-v2-31#section-4.1.1
-   * 
+   *
    * @param  [type] $response [description]
    * @return [type]           [description]
    */
@@ -99,8 +101,9 @@ class OAuth2_Authorize_Controller extends OAuth2_Rest_Server {
   }
 
   static public function setState ( $request ) {
-    self::$state = isset( $request[ 'state' ] ) ? $request[ 'state' ] : null; 
+    self::$state = isset( $request[ 'state' ] ) ? $request[ 'state' ] : null;
   }
+
 
 
 

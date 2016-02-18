@@ -3,7 +3,7 @@
 /**
  * @TODO Store used access tokens in order to check reuse.
  */
-class OAuth2_Token_Controller extends OAuth2_Rest_Server {
+class WP_REST_OAuth2_Token_Controller extends WP_REST_OAuth2_Server {
 
   // Validate Request
   static function validate( WP_REST_Request $request ) {

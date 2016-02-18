@@ -11,9 +11,11 @@
  */
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
+// Load helpers
 include_once( dirname( __FILE__ ) . '/lib/helpers/class-wp-rest-header-helper.php' );
 include_once( dirname( __FILE__ ) . '/lib/helpers/class-wp-rest-error-helper.php' );
 
+// Load core classes
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth-client.php' );
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-client.php' );
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-token.php' );
@@ -21,22 +23,22 @@ include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-access-to
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-refresh-token.php' );
 include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-authorization-code.php' );
 
-include_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-authenticator.php' );
-
-
-
+// Initiate admin
 include_once( dirname( __FILE__ ) . '/admin.php' );
 
-add_action( 'rest_api_init', array( 'OAuth2_Rest_Server', 'register_routes' ) );
-add_action( 'init', array( 'OAuth2_Rest_Server', 'register_storage' ) );
-add_filter( 'rest_index', array( 'OAuth2_Rest_Server', 'add_routes_to_index' ) );
-add_action( 'rest_api_init', array( 'OAuth2_Rest_Server', 'init_autheticator' ) );
+// Initiate the server
+add_action( 'rest_api_init', array( 'WP_REST_OAuth2_Server', 'register_routes' ) );
+add_action( 'init', array( 'WP_REST_OAuth2_Server', 'register_storage' ) );
+add_filter( 'rest_index', array( 'WP_REST_OAuth2_Server', 'add_routes_to_index' ) );
+add_action( 'rest_api_init', array( 'WP_REST_OAuth2_Server', 'init_autheticator' ) );
 
 
 /**
- * OAuth2 Rest Server Main Class
+ * OAuth2 Rest Server Main Class.
+ *
+ * This class is used to
  */
-class OAuth2_Rest_Server {
+class WP_REST_OAuth2_Server {
 
   public static $authenticator = null;
 
@@ -45,39 +47,34 @@ class OAuth2_Rest_Server {
    *
    * @todo  Deturmine if we really want to call the args parameter when registering the route.
    * The REST API does not return the correct format needed if we run them through the args.
-   * Currently validation is done in the authorize controller but there may be be batter way of doing it.
+   * Currently validation is done in the authorize controller but there may be be better way of doing it.
    * 
-   * @return [type] [description]
    */
   static function register_routes() {
-	require_once dirname( __FILE__ ) . '/lib/class.oauth2-authorize-controller.php';
-	require_once dirname( __FILE__ ) . '/lib/class.oauth2-token-controller.php';
-	require_once dirname( __FILE__ ) . '/lib/class.oauth2-response-controller.php';
-	require_once dirname( __FILE__ ) . '/lib/class.oauth2-storage-controller.php';
+	require_once dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-authorize-controller.php';
+	require_once dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-token-controller.php';
+	require_once dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-response-controller.php';
+	require_once dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-storage-controller.php';
 
 	// Registers the authorize endpoint
 	register_rest_route( 'oauth2/v1', '/authorize', array(
 		'methods'	 => 'GET',
-		'callback'	 => array( 'OAuth2_Authorize_Controller', 'validate' ),
+		'callback'	 => array( 'WP_REST_OAuth2_Authorize_Controller', 'validate' ),
 		/*'args'		 => array(
 			'client_id'		 => array(
-				'required' => true,
-			//'validate_callback' => 'oauth2_validate_authorize_request'
+				'required' => true
 			),
 			'response_type'	 => array(
 				'required' => true,
-			//'validate_callback' => array( 'OAuth2_Authorize_Controller', 'validateResponseType' )
 			),
 			'redirect_uri'	 => array(
 				'required' => true,
-			//'validate_callback' => 'oauth2_validate_redirect_uri'
 			),
 			'scope'			 => array(
 				'required' => false
 			),
 			'state'			 => array(
 				'required' => false,
-			//'validate_callback' => 'oauth2_set_state'
 			)
 		)*/
 	) );
@@ -85,25 +82,21 @@ class OAuth2_Rest_Server {
 	// Registers the token endpoint
 	register_rest_route( 'oauth2/v1', '/token', array(
 		'methods'	 => 'POST',
-		'callback'	 => array( 'OAuth2_Token_Controller', 'validate' ),
-		'args'		 => array(
+		'callback'	 => array( 'WP_REST_OAuth2_Token_Controller', 'validate' ),
+		/*'args'		 => array(
 			'client_id'		 => array(
 				'required' => true,
-			//'validate_callback' => 'oauth2_validate_authorize_request'
 			),
 			'client_secret'	  => array(
 				'required' => true,
-			//'validate_callback' => 'oauth2_validate_authorize_request'
 			),
 			'grant_type'	 => array(
 				'required' => true,
-			//'validate_callback' => array( 'OAuth2_Authorize_Controller', 'validateResponseType' )
 			),
 			'redirect_uri'	 => array(
 				'required' => true,
-			//'validate_callback' => 'oauth2_validate_redirect_uri'
 			)
-		)
+		)*/
 	) );
   }
 
@@ -112,7 +105,6 @@ class OAuth2_Rest_Server {
    * @param object $response_object WP_REST_Response Object
    * @return object Filtered WP_REST_Response object
    */
-
   static function add_routes_to_index( $response_object ) {
 	if ( empty( $response_object->data[ 'authentication' ] ) ) {
 	  $response_object->data[ 'authentication' ] = array();
@@ -128,7 +120,6 @@ class OAuth2_Rest_Server {
 
   /**
    * Register the CPTs needed for storage.
-   *
    */
   static function register_storage() {
 	register_post_type( 'json_consumer', array(
@@ -168,7 +159,12 @@ class OAuth2_Rest_Server {
 	) );
   }
 
+  /**
+   * Setup the authenticator.
+   */
   static function init_autheticator() {
+	include_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-authenticator.php' );
+
 	self::$authenticator = new WP_REST_OAuth2_Authenticator();
   }
 }
