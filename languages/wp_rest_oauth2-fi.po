@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP REST OAuth 2.0\n"
 "POT-Creation-Date: 2016-02-18 12:51+0200\n"
-"PO-Revision-Date: 2016-02-18 13:04+0200\n"
+"PO-Revision-Date: 2016-02-18 13:28+0200\n"
 "Last-Translator: A-P Koponen / Versi <info@versi.fi>\n"
 "Language-Team: \n"
 "Language: fi\n"
@@ -30,7 +30,7 @@ msgstr "Sovelluksen nimi"
 
 #: ../admin.php:57
 msgid "Revoke"
-msgstr "Peruuta"
+msgstr "Peruuta valtuutus"
 
 #: ../admin.php:64
 msgid "No applications authorized."

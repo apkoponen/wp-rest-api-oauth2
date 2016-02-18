@@ -26,7 +26,7 @@ class WP_REST_OAuth2_Token_Controller extends WP_REST_OAuth2_Server {
 
 	// Check that client credentials are valid
 	// We may be able to move this up in the first check as well
-	if ( !OAuth2_Storage_Controller::authenticateClient( $request[ 'client_id' ], $request[ 'client_secret' ] ) ) {
+	if ( !WP_REST_OAuth2_Storage_Controller::authenticateClient( $request[ 'client_id' ], $request[ 'client_secret' ] ) ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
 
 	  return new WP_REST_OAuth2_Response_Controller( $error );
