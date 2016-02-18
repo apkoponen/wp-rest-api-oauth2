@@ -27,13 +27,6 @@ include_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-authenticator.php
 
 include_once( dirname( __FILE__ ) . '/admin.php' );
 
-if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	include_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-cli.php' );
-
-	WP_CLI::add_command( 'oauth2', 'WP_REST_OAuth2_CLI' );
-}
-
-
 add_action( 'rest_api_init', array( 'OAuth2_Rest_Server', 'register_routes' ) );
 add_action( 'init', array( 'OAuth2_Rest_Server', 'register_storage' ) );
 add_filter( 'rest_index', array( 'OAuth2_Rest_Server', 'add_routes_to_index' ) );
