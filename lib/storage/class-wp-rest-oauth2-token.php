@@ -88,7 +88,7 @@ abstract class WP_REST_OAuth2_Token {
 	$token_type = $class::get_type();
 
 	// Issue access token
-	$token	 = apply_filters( 'json_oauth2_' . $token_type . '_token', wp_generate_password( self::TOKEN_KEY_LENGTH, false ) );
+	$token	 = apply_filters( 'wp_rest_oauth2_' . $token_type . '_token', wp_generate_password( self::TOKEN_KEY_LENGTH, false ) );
 
 	// Check that client exists
 	$consumer = WP_REST_OAuth2_Client::get_by_client_id( $client_id );
@@ -105,7 +105,7 @@ abstract class WP_REST_OAuth2_Token {
 		'expires'	 => intval( $expires ),
 		'scope'		 => $scope
 	);
-	$data	 = apply_filters( 'json_oauth2_' . $token_type . '_token_data', $unfiltered_data );
+	$data	 = apply_filters( 'wp_rest_oauth2_' . $token_type . '_token_data', $unfiltered_data );
 
 	// Insert token to DB
 	$new_id = wp_insert_post( array(

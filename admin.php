@@ -10,14 +10,14 @@ require dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-admin.php';
 
 add_action( 'admin_menu', array( 'WP_REST_OAuth2_Admin', 'register' ) );
 
-add_action( 'personal_options', 'rest_oauth2_profile_section', 50 );
+add_action( 'personal_options', 'wp_rest_oauth2_profile_section', 50 );
 
-add_action( 'all_admin_notices', 'rest_oauth2_profile_messages' );
+add_action( 'all_admin_notices', 'wp_rest_oauth2_profile_messages' );
 
-add_action( 'personal_options_update',  'rest_oauth2_profile_save', 10, 1 );
-add_action( 'edit_user_profile_update', 'rest_oauth2_profile_save', 10, 1 );
+add_action( 'personal_options_update',  'wp_rest_oauth2_profile_save', 10, 1 );
+add_action( 'edit_user_profile_update', 'wp_rest_oauth2_profile_save', 10, 1 );
 
-function rest_oauth2_profile_section( $user ) {
+function wp_rest_oauth2_profile_section( $user ) {
 	global $wpdb;
 
 	// Get user's tokens that haven't expired
@@ -54,7 +54,7 @@ function rest_oauth2_profile_section( $user ) {
 								?>
 								<tr>
 									<td><?php echo esc_html( $application->post_title ) ?></td>
-									<td><button class="button" name="rest_oauth2_revoke" value="<?php echo esc_attr( $access_token->ID ) ?>"><?php esc_html_e( 'Revoke', 'wp_rest_oauth2' ) ?></button>
+									<td><button class="button" name="wp_rest_oauth2_revoke" value="<?php echo esc_attr( $access_token->ID ) ?>"><?php esc_html_e( 'Revoke', 'wp_rest_oauth2' ) ?></button>
 								</tr>
 
 							<?php endforeach ?>
@@ -70,29 +70,29 @@ function rest_oauth2_profile_section( $user ) {
 	<?php
 }
 
-function rest_oauth2_profile_messages() {
+function wp_rest_oauth2_profile_messages() {
 	global $pagenow;
 	if ( $pagenow !== 'profile.php' && $pagenow !== 'user-edit.php' ) {
 		return;
 	}
 
-	if ( ! empty( $_GET['rest_oauth2_revoked'] ) ) {
+	if ( ! empty( $_GET['wp_rest_oauth2_revoked'] ) ) {
 		echo '<div id="message" class="updated"><p>' . __( 'Token revoked.', 'wp_rest_oauth2' ) . '</p></div>';
 	}
-	if ( ! empty( $_GET['rest_oauth2_revocation_failed'] ) ) {
+	if ( ! empty( $_GET['wp_rest_oauth2_revocation_failed'] ) ) {
 		echo '<div id="message" class="error"><p>' . __( 'Unable to revoke token.', 'wp_rest_oauth2' ) . '</p></div>';
 	}
-	if ( ! empty( $_GET['rest_oauth2_token_not_exists'] ) ) {
+	if ( ! empty( $_GET['wp_rest_oauth2_token_not_exists'] ) ) {
 		echo '<div id="message" class="error"><p>' . __( 'Token not found.', 'wp_rest_oauth2' ) . '</p></div>';
 	}
 }
 
-function rest_oauth2_profile_save( $user_id ) {
-	if ( empty( $_POST['rest_oauth2_revoke'] ) ) {
+function wp_rest_oauth2_profile_save( $user_id ) {
+	if ( empty( $_POST['wp_rest_oauth2_revoke'] ) ) {
 		return;
 	}
 
-	$post_id = intval( $_POST['rest_oauth2_revoke'] );
+	$post_id = intval( $_POST['wp_rest_oauth2_revoke'] );
 	$token = WP_REST_OAuth2_Access_Token::get_token_by_id( $post_id );
 
 	// Check that the request is valid and the user has access.
@@ -108,10 +108,10 @@ function rest_oauth2_profile_save( $user_id ) {
 	$result = WP_REST_OAuth2_Access_Token::revoke_token( $token[ 'token' ] );
 
 	if ( is_wp_error( $result ) || $result === false ) {
-		$redirect = add_query_arg( 'rest_oauth2_revocation_failed', true, get_edit_user_link( $user_id ) );
+		$redirect = add_query_arg( 'wp_rest_oauth2_revocation_failed', true, get_edit_user_link( $user_id ) );
 	}
 	else {
-		$redirect = add_query_arg( 'rest_oauth2_revoked', $post_id, get_edit_user_link( $user_id ) );
+		$redirect = add_query_arg( 'wp_rest_oauth2_revoked', $post_id, get_edit_user_link( $user_id ) );
 	}
 
 	wp_redirect($redirect);

@@ -205,7 +205,7 @@ abstract class WP_REST_OAuth_Client {
 		 * @param int $ID Post ID we created.
 		 * @param array $params Parameters passed to create.
 		 */
-		$meta = apply_filters( 'json_consumer_meta', $meta, $ID, $params );
+		$meta = apply_filters( 'wp_rest_oauth2_json_consumer_meta', $meta, $ID, $params );
 
 		foreach ( $meta as $key => $value ) {
 			update_post_meta( $ID, $key, $value );

@@ -14,7 +14,7 @@ abstract class WP_REST_OAuth2_Authorization_Code {
    */
   public static function get_authorization_code( $code ) {
 	$code = sanitize_key($code);
-	return get_option( 'oauth2_code_' . $code );
+	return get_option( 'wp_rest_oauth2_code_' . $code );
   }
 
   /**
@@ -33,7 +33,7 @@ abstract class WP_REST_OAuth2_Authorization_Code {
 	}
 
 	// Issue access token
-	$code = apply_filters( 'json_oauth2_authorization_code', wp_generate_password( self::AUTHORIZATION_CODE_LENGTH, false ) );
+	$code = apply_filters( 'wp_rest_oauth2_authorization_code', wp_generate_password( self::AUTHORIZATION_CODE_LENGTH, false ) );
 
 	// Check that client exists
 	$consumer = WP_REST_OAuth2_Client::get_by_client_id( $client_id );
@@ -55,9 +55,9 @@ abstract class WP_REST_OAuth2_Authorization_Code {
 		'expires'		 => intval( $expires ),
 		'scope'			 => $scope
 	);
-	$data			 = apply_filters( 'json_oauth2_authorization_code_data', $unfiltered_data );
+	$data			 = apply_filters( 'wp_rest_oauth2_authorization_code_data', $unfiltered_data );
 
-	add_option( 'oauth2_code_' . $code, $data );
+	add_option( 'wp_rest_oauth2_code_' . $code, $data );
 
 	return $data;
   }
@@ -69,19 +69,19 @@ abstract class WP_REST_OAuth2_Authorization_Code {
    * @return bool True, if code is successfully deleted. False on failure.
    */
   public static function revoke_code( $code ) {
-	return delete_option( 'oauth2_code_' . $code );
+	return delete_option( 'wp_rest_oauth2_code_' . $code );
   }
 
   /**
    * Delete expired codes
    */
   public static function expire_codes() {
-	$results = $wpdb->get_col( "SELECT option_value FROM {$wpdb->options} WHERE option_name LIKE 'oauth2_code_%'", 0 );
+	$results = $wpdb->get_col( "SELECT option_value FROM {$wpdb->options} WHERE option_name LIKE 'wp_rest_oauth2_code_%'", 0 );
 	$codes	 = array_map( 'unserialize', $results );
 
 	foreach ( $codes as $code ) {
 	  if ( $code[ 'expires' ] >= time() ) {
-		delete_option( 'oauth2_code_' . $code[ 'code' ] );
+		delete_option( 'wp_rest_oauth2_code_' . $code[ 'code' ] );
 	  }
 	}
   }

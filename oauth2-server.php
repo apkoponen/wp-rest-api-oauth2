@@ -171,7 +171,7 @@ class WP_REST_OAuth2_Server {
   /**
    * Load textdomain
    */
-  function load_textdomain() {
+  static function load_textdomain() {
 	load_plugin_textdomain( 'wp_rest_oauth2', false, dirname( plugin_basename(__FILE__) ) . '/languages/' );
   }
 }

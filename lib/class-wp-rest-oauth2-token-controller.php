@@ -32,7 +32,7 @@ class WP_REST_OAuth2_Token_Controller extends WP_REST_OAuth2_Server {
 	  return new OAuth2_Response_Controller( $error );
 	}
 
-	$supported_grant_types = apply_filters( 'oauth2_grant_types', array( 'authorization_code' ) );
+	$supported_grant_types = apply_filters( 'wp_rest_oauth2_grant_types', array( 'authorization_code' ) );
 
 	if ( !in_array( $request[ 'grant_type' ], $supported_grant_types ) ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'unsupported_grant_type' );
