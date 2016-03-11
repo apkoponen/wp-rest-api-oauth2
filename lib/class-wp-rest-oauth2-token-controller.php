@@ -58,8 +58,6 @@ class WP_REST_OAuth2_Token_Controller extends WP_REST_OAuth2_Server {
 	  return new WP_REST_OAuth2_Response_Controller( $error );
 	}
 
-
-
 	// Codes are single use, remove it
 	if ( !WP_REST_OAuth2_Authorization_Code::revoke_code( $code[ 'code' ] ) ) {
 	  	$error = WP_REST_OAuth2_Error_Helper::get_error( 'server_error' );
@@ -74,8 +72,8 @@ class WP_REST_OAuth2_Token_Controller extends WP_REST_OAuth2_Server {
 	$expires = time() + MONTH_IN_SECONDS;
 	$access_token = WP_REST_OAuth2_Access_Token::generate_token( $code[ 'client_id' ], $code[ 'user_id' ], $expires, $code[ 'scope' ], $extra_metas );
 
-	// Store authorization code and access token to refresh token (for possible revocation).
-	$extra_metas['access_token'] = $access_token[ 'token' ];
+	// Store authorization code and access token hash to refresh token (for possible revocation).
+	$extra_metas['access_token'] = $access_token[ 'hash' ];
 	$refresh_token = WP_REST_OAuth2_Refresh_Token::generate_token( $code[ 'client_id' ], $code[ 'user_id' ], 0, $code[ 'scope' ], $extra_metas );
 
 	$data = array(
