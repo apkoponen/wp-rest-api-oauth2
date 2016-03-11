@@ -21,8 +21,9 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
     // Check if required params exist
 	$required_params = array('client_id', 'response_type', 'redirect_uri');
 	$required_missing = false;
+	$request_query_params = $request->get_query_params();
 	foreach($required_params as $required_param) {
-	  if( empty( $request->get_param( $required_param ) ) ) {
+	  if( empty( $request_query_params[ $required_param ] ) ) {
 		$required_missing = true;
 	  }
 	}
@@ -50,7 +51,7 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 
     if ( ! $user_id ) {
       global $wp;
-      $current_url = add_query_arg( $wp->query_string . http_build_query( $request->get_params() ), '', site_url( $wp->request ) );
+      $current_url = add_query_arg( $wp->query_string . http_build_query( $request_query_params ), '', site_url( $wp->request ) );
       wp_redirect( wp_login_url( $current_url ) );
 
       exit;
@@ -74,7 +75,7 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
       $data[ 'state' ] = self::$state;
     }
 
-	$redirect_url = add_query_arg($data, $request->get_param('redirect_uri'));
+	$redirect_url = add_query_arg($data, $request_query_params[ 'redirect_uri' ]);
 	wp_redirect($redirect_url);
 	exit;
 
