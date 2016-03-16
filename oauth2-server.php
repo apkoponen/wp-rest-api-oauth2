@@ -12,26 +12,36 @@
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 // Load helpers
-include_once( dirname( __FILE__ ) . '/lib/helpers/class-wp-rest-header-helper.php' );
-include_once( dirname( __FILE__ ) . '/lib/helpers/class-wp-rest-error-helper.php' );
+require_once( dirname( __FILE__ ) . '/lib/helpers/class-wp-rest-header-helper.php' );
+require_once( dirname( __FILE__ ) . '/lib/helpers/class-wp-rest-error-helper.php' );
 
 // Load core classes
-include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth-client.php' );
-include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-client.php' );
-include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-token.php' );
-include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-access-token.php' );
-include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-refresh-token.php' );
-include_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-authorization-code.php' );
+require_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth-client.php' );
+require_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-client.php' );
+require_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-token.php' );
+require_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-access-token.php' );
+require_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-refresh-token.php' );
+require_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth2-authorization-code.php' );
+
+// Load UI
+require_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-ui.php' );
 
 // Initiate admin
-include_once( dirname( __FILE__ ) . '/admin.php' );
+require_once( dirname( __FILE__ ) . '/admin.php' );
+
+// Require
+require_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-authorize-controller.php' );
+require_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-token-controller.php' );
+require_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-response-controller.php' );
+require_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-storage-controller.php' );
 
 // Initiate the server
 add_action( 'rest_api_init', array( 'WP_REST_OAuth2_Server', 'register_routes' ) );
 add_action( 'init', array( 'WP_REST_OAuth2_Server', 'register_storage' ) );
 add_filter( 'rest_index', array( 'WP_REST_OAuth2_Server', 'add_routes_to_index' ) );
 add_action( 'rest_api_init', array( 'WP_REST_OAuth2_Server', 'init_autheticator' ) );
-add_action('plugins_loaded', array( 'WP_REST_OAuth2_Server', 'load_textdomain' ) );
+add_action( 'plugins_loaded', array( 'WP_REST_OAuth2_Server', 'load_textdomain' ) );
+add_action( 'init', array( 'WP_REST_OAuth2_Server', 'load_authorize_ui' ) );
 
 /**
  * OAuth2 Rest Server Main Class.
@@ -51,11 +61,6 @@ class WP_REST_OAuth2_Server {
    * 
    */
   static function register_routes() {
-	require_once dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-authorize-controller.php';
-	require_once dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-token-controller.php';
-	require_once dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-response-controller.php';
-	require_once dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-storage-controller.php';
-
 	// Registers the authorize endpoint
 	register_rest_route( 'oauth2/v1', '/authorize', array(
 		'methods'	 => 'GET',
@@ -166,6 +171,14 @@ class WP_REST_OAuth2_Server {
 	include_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-authenticator.php' );
 
 	self::$authenticator = new WP_REST_OAuth2_Authenticator();
+  }
+
+  /**
+   * Register the authorization page
+   */
+  static function load_authorize_ui() {
+	$authorize_ui = new WP_REST_OAuth2_UI();
+	$authorize_ui->register_hooks();
   }
 
   /**
