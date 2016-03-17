@@ -8,27 +8,20 @@
 class WP_REST_OAuth2_Header_Helper {
 
   /**
-   * Parse the Authorization header into parameters
+   * Parse the Authorization header for Bearer token
    *
    * @param string $header Authorization header value (not including "Authorization: " prefix)
-   * @return array|boolean Map of parameter values, false if not an OAuth header
+   * @return string|boolean Token as a string, false if not a Bearer-header
    */
   public static function parse_header( $header ) {
-	if ( substr( $header, 0, 6 ) !== 'OAuth2 ' ) {
+	if ( substr( $header, 0, 7 ) !== 'Bearer ' ) {
 	  return false;
 	}
 
-	// From OAuth PHP library, used under MIT license
-	$params = array();
-	if ( preg_match_all( '/(oauth2_[a-z_-]*)=(:?"([^"]*)"|([^,]*))/', $header, $matches ) ) {
-	  foreach ( $matches[ 1 ] as $i => $h ) {
-		$params[ $h ] = urldecode( empty( $matches[ 3 ][ $i ] ) ? $matches[ 4 ][ $i ] : $matches[ 3 ][ $i ]  );
-	  }
-	  if ( isset( $params[ 'realm' ] ) ) {
-		unset( $params[ 'realm' ] );
-	  }
+	if ( preg_match( '/Bearer (.*)/', $header, $matches ) ) {
+	  return $matches[1];
 	}
-	return $params;
+	return false;
   }
 
   /**
@@ -61,11 +54,11 @@ class WP_REST_OAuth2_Header_Helper {
   }
 
   /**
-   * Get authorization parameters starting with oauth2_ from Authorization header
+   * Get the Bearer token from Authorization header
    *
    * @return array
    */
-  public static function get_authorization_parameters() {
+  public static function get_authorization_bearer() {
 	$header			 = self::get_authorization_header();
 	$header_params	 = null;
 
@@ -73,7 +66,7 @@ class WP_REST_OAuth2_Header_Helper {
 	  // Trim leading spaces
 	  $header = trim( $header );
 
-	  $header_params = $this->parse_header( $header );
+	  $header_params = self::parse_header( $header );
 	}
 
 	return $header_params;
