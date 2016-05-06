@@ -101,7 +101,7 @@ class WP_REST_OAuth2_UI {
 	echo '<input type="hidden" name="response_type" value="' . esc_attr( $this->response_type ) . '" />';
 	echo '<input type="hidden" name="state" value="' . esc_attr( $this->state ) . '" />';
 	echo '<input type="hidden" name="scope" value="' . esc_attr( $this->scope ) . '" />';
-	wp_nonce_field( 'oauth2_authorization', '_oauth2_nonce' );
+	wp_nonce_field( 'oauth2_authorization_' . $this->redirect_uri . '_' . $this->consumer->client_id, '_oauth2_nonce' );
 	wp_nonce_field( 'wp_rest' );
   }
 
