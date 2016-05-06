@@ -59,13 +59,8 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 	  }
 	}
 
-	$user_id = apply_filters( 'determine_current_user', false );
-    if ( ! $user_id ) {
-      global $wp;
-      $current_url = add_query_arg( $wp->query_string . http_build_query( $request_query_params ), '', site_url( $wp->request ) );
-      wp_redirect( wp_login_url( $current_url ) );
-      exit;
-    }
+	// If nonce matches, we know the user.
+	$user_id = get_current_user_id();
 
 	// Set scope
 	$scope = empty( $request_query_params['scope'] ) ? '*' : $request_query_params['scope'];
@@ -92,8 +87,6 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 	$redirect_url = add_query_arg( $data, $request_query_params[ 'redirect_uri' ] );
 	wp_redirect( $redirect_url );
 	exit;
-
-    return new WP_REST_OAuth2_Response_Controller( $data );
   }
 
   /**
