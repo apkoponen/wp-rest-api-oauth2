@@ -51,7 +51,7 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 	  exit;
 	} else {
 	  // Check nonce to protect from CSRF (the login has to be active)
-	  check_admin_referer('oauth2_authorization_' . $request_query_params['redirect_uri'] . '_' . $request_query_params['client_id'], '_oauth2_nonce');
+	  check_admin_referer( 'oauth2_authorization_' . $request_query_params[ 'redirect_uri' ] . '_' . $request_query_params[ 'client_id' ], '_oauth2_nonce' );
 	  // Check if the user authorized the request
 	  if ( $request_query_params[ 'wp-submit' ] !== 'authorize' ) {
 		$error = WP_REST_OAuth2_Error_Helper::get_error( 'access_denied' );
