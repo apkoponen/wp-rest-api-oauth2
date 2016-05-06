@@ -13,6 +13,9 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 
   // Validate Request
   static function validate ( WP_REST_Request $request ) {
+	if (!is_ssl() AND ( defined('WP_REST_OAUTH2_TEST_MODE') && !WP_REST_OAUTH2_TEST_MODE ) ) {
+	  return new WP_Error('SSL is required');
+	}
 
     // Set state if provided
     self::setState( $request );

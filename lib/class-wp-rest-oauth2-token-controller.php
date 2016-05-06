@@ -7,6 +7,9 @@ class WP_REST_OAuth2_Token_Controller extends WP_REST_OAuth2_Server {
 
   // Validate Request
   static function validate( WP_REST_Request $request ) {
+	if ( !is_ssl() AND ( defined('WP_REST_OAUTH2_TEST_MODE') && !WP_REST_OAUTH2_TEST_MODE ) ) {
+	  return new WP_Error('SSL is required');
+	}
 
 	// Check if required params exist
 	$required_params = array( 'client_id', 'client_secret', 'grant_type', 'redirect_uri' );
