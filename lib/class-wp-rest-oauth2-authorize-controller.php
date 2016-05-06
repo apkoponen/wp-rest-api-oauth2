@@ -46,7 +46,7 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 	// Check if we're past authorization
 	if ( empty( $request_query_params[ 'wp-submit' ] ) ) {
 	  $login_url = site_url( 'wp-login.php?action=oauth2_authorize', 'https' );
-	  $authorize_url = add_query_arg( $request_query_params, $login_url );
+	  $authorize_url = add_query_arg( array_map( 'rawurlencode', $request_query_params ), $login_url );
 	  wp_safe_redirect( $authorize_url );
 	  exit;
 	} else {
@@ -88,8 +88,9 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
       $data[ 'state' ] = self::$state;
     }
 
-	$redirect_url = add_query_arg($data, $request_query_params[ 'redirect_uri' ]);
-	wp_redirect($redirect_url);
+	$data = array_map( 'rawurlencode', $data );
+	$redirect_url = add_query_arg( $data, $request_query_params[ 'redirect_uri' ] );
+	wp_redirect( $redirect_url );
 	exit;
 
     return new WP_REST_OAuth2_Response_Controller( $data );
