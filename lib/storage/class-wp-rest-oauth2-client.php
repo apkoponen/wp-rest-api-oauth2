@@ -6,7 +6,7 @@
  * Used under GPL3 license.
  */
 class WP_REST_OAuth2_Client extends WP_REST_OAuth_Client {
-	const CONSUMER_KEY_LENGTH = 12;
+	const CONSUMER_KEY_LENGTH = 32;
 	const CONSUMER_SECRET_LENGTH = 32;
 
 	/**
