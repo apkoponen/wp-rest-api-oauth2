@@ -14,10 +14,17 @@ class WP_REST_OAuth2_Authenticator {
    */
   protected $auth_status = null;
 
+  /**
+   * @var null|array Null if not authenticated using token, otherwise the token used for authentication.
+   */
+  protected $authorized_token = null;
+
   public function __construct() {
 	add_filter( 'determine_current_user', array( $this, 'authenticate' ) );
 	add_filter( 'rest_authentication_errors', array( $this, 'get_authentication_errors' ) );
-	add_action( 'init', array( $this, 'force_reauthentication' ) , 100 );
+	add_action( 'init', array( $this, 'force_reauthentication' ), 100 );
+	// Add scope limiting with the highest maximum priority.
+	add_action( 'user_has_cap', array( $this, 'limit_to_scope_caps' ), PHP_INT_MAX, 4 );
   }
 
   /**
@@ -31,6 +38,7 @@ class WP_REST_OAuth2_Authenticator {
 	  return $user;
 	}
 
+	// Check if token is in request
 	$bearer_token = WP_REST_OAuth2_Header_Helper::get_authorization_bearer();
 	if ( empty( $bearer_token ) ) {
 	  $this->auth_status = $bearer_token;
@@ -45,6 +53,7 @@ class WP_REST_OAuth2_Authenticator {
 	}
 
 	$this->auth_status = true;
+	$this->authorized_token = $token;
 	return $token[ 'user_id' ];
   }
 
@@ -80,6 +89,41 @@ class WP_REST_OAuth2_Authenticator {
 	}
 
 	return $this->auth_status;
+  }
+
+  /**
+   * A filter for user_has_cap that limits the authentication to the scope capabilities.
+   *
+   * This is currently the only way to have limited scopes in WordPress. However, it has limitations, as we cannot
+   * guarantee that the request is made in "the context of the current user". If a plugin is checking the capabilities
+   * of the user that is same user that was authorized with the token in a REST API request, the capability information
+   * is wrong. This would be a problem e.g. if has plugin is offers an endpoint for listing the capabilities of all
+   * users and a request to access the endpoint is made with an access token that has a limited scope.
+   *
+   * @param array   $allcaps An array of all the user's capabilities.
+   * @param array   $caps    Actual capabilities for meta capability.
+   * @param array   $args    Optional parameters passed to has_cap(), typically object ID.
+   * @param WP_User $user    The user object.
+   * @return array An array of capabilities filtered by the token
+   */
+  public function limit_to_scope_caps( $allcaps, $caps, $args, $user ) {
+	// Filter only if token authorization has been done, the token id matches the token user_id,
+	// and token has limited scope.
+	if ( !empty( $this->auth_status ) && !empty( $this->authorized_token ) &&
+			$user->ID === absint($this->authorized_token[ 'user_id' ]) &&
+			$this->authorized_token[ 'scope' ] !== WP_REST_OAuth2_Scope_Helper::get_all_caps_scope() ) {
+	  $scope_capabilities = WP_REST_OAuth2_Scope_Helper::get_scope_capabilities( $this->authorized_token[ 'scope' ] );
+
+	  // Only allow capabilities that are in scope and are allowed for user
+	  $allowed_capabilities = [];
+	  foreach($scope_capabilities as $capability) {
+		$allowed_capabilities[$capability] = !empty( $allcaps[$capability] );
+	  }
+
+	  return $allowed_capabilities;
+	}
+
+	return $allcaps;
   }
 
 }

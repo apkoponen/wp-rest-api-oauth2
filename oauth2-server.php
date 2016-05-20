@@ -14,6 +14,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 // Load helpers
 require_once( dirname( __FILE__ ) . '/lib/helpers/class-wp-rest-header-helper.php' );
 require_once( dirname( __FILE__ ) . '/lib/helpers/class-wp-rest-error-helper.php' );
+require_once( dirname( __FILE__ ) . '/lib/helpers/class-wp-rest-scope-helper.php' );
 
 // Load core classes
 require_once( dirname( __FILE__ ) . '/lib/storage/class-wp-rest-oauth-client.php' );

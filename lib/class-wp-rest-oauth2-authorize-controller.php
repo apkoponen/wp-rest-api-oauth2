@@ -43,6 +43,12 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 	  return new WP_REST_OAuth2_Response_Controller( $error );
 	}
 
+	// Validate scope
+	if(!empty($request_query_params['scope']) && !WP_REST_OAuth2_Scope_Helper::validate_scope( $request_query_params['scope'] )) {
+	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_scope' );
+	  return new WP_REST_OAuth2_Response_Controller( $error );
+	}
+
 	// Check if we're past authorization
 	if ( empty( $request_query_params[ 'wp-submit' ] ) ) {
 	  $login_url = site_url( 'wp-login.php?action=oauth2_authorize', 'https' );
@@ -63,7 +69,7 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 	$user_id = get_current_user_id();
 
 	// Set scope
-	$scope = empty( $request_query_params[ 'scope' ] ) ? '*' : $request_query_params[ 'scope' ];
+	$scope = empty( $request_query_params[ 'scope' ] ) ? WP_REST_OAuth2_Scope_Helper::get_all_caps_scope() : $request_query_params[ 'scope' ];
 
 	// Create authorization code
 	$code = WP_REST_OAuth2_Authorization_Code::generate_code( $request[ 'client_id' ], $user_id, $request[ 'redirect_uri' ], time() + 30, $scope );

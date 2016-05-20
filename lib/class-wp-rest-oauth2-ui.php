@@ -65,7 +65,7 @@ class WP_REST_OAuth2_UI {
 
 	// Set up fields
 	$consumer = WP_REST_OAuth2_Client::get_by_client_id( $_GET[ 'client_id' ] );
-	$scope = '*';
+	$scope = WP_REST_OAuth2_Scope_Helper::get_all_caps_scope();
 	if ( !empty( $_GET[ 'scope' ] ) ) {
 	  $scope = wp_unslash( $_GET[ 'scope' ] );
 	}
