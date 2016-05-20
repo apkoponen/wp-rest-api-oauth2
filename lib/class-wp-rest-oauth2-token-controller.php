@@ -157,8 +157,8 @@ class WP_REST_OAuth2_Token_Controller extends WP_REST_OAuth2_Server {
 		  $scope_allowed = false;
 		} else {
 		  $scope_allowed = true;
-		  $refresh_token_scopes = explode( ',', $refresh_token[ 'scope' ] );
-		  $requested_scopes = explode( ',', $request_body_params[ 'scope' ] );
+		  $refresh_token_scopes = WP_REST_OAuth2_Scope_Helper::get_scope_capabilities( $refresh_token[ 'scope' ] );
+		  $requested_scopes = WP_REST_OAuth2_Scope_Helper::get_scope_capabilities( $request_body_params[ 'scope' ] );
 
 		  foreach( $requested_scopes as $requested_scope ) {
 			if ( !in_array( $requested_scope, $refresh_token_scopes ) ) {
