@@ -67,7 +67,6 @@ class WP_REST_OAuth2_Token_Controller extends WP_REST_OAuth2_Server {
 	// Check that redirect_uri is set
 	if ( empty( $request_body_params[ 'redirect_uri' ] ) ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
-
 	  return new WP_REST_OAuth2_Response_Controller( $error );
 	}
 
@@ -76,7 +75,6 @@ class WP_REST_OAuth2_Token_Controller extends WP_REST_OAuth2_Server {
 	// Authorization code MUST exist
 	if ( empty( $code ) ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
-
 	  return new WP_REST_OAuth2_Response_Controller( $error );
 	}
 
@@ -91,15 +89,15 @@ class WP_REST_OAuth2_Token_Controller extends WP_REST_OAuth2_Server {
 	}
 
 	// Codes are single use, remove it
-	if ( !WP_REST_OAuth2_Authorization_Code::revoke_code( $code[ 'code' ] ) ) {
+	if ( !WP_REST_OAuth2_Authorization_Code::revoke_code( $request_body_params[ 'code' ] ) ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'server_error' );
 
 	  return new WP_REST_OAuth2_Response_Controller( $error );
 	}
 
-	// Store authorization code to access token (for possible revocation).
+	// Store authorization code hash to access token (for possible revocation).
 	$extra_metas = array(
-		'authorization_code' => $code[ 'code' ]
+		'authorization_code' => $code[ 'hash' ]
 	);
 	$access_token = WP_REST_OAuth2_Access_Token::generate_token( $code[ 'client_id' ], $code[ 'user_id' ], time() + MONTH_IN_SECONDS, $code[ 'scope' ], $extra_metas );
 

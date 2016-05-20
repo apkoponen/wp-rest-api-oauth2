@@ -13,8 +13,7 @@ abstract class WP_REST_OAuth2_Authorization_Code {
    * @return array|false Code data on success, false otherwise
    */
   public static function get_authorization_code( $code ) {
-	$code = sanitize_key($code);
-	return get_option( 'wp_rest_oauth2_code_' . $code );
+	return get_option( 'wp_rest_oauth2_code_' . self::hash_code( $code ) );
   }
 
   /**
@@ -32,7 +31,7 @@ abstract class WP_REST_OAuth2_Authorization_Code {
 	  $expires = time() + 30; // Authorization codes will always expire.
 	}
 
-	// Issue access token
+	// Generate code
 	$code = apply_filters( 'wp_rest_oauth2_authorization_code', wp_generate_password( self::AUTHORIZATION_CODE_LENGTH, false ) );
 
 	// Check that client exists
@@ -46,9 +45,12 @@ abstract class WP_REST_OAuth2_Authorization_Code {
 	  return new WP_Error( 'oauth2_redirect_uri_mismatch', __( 'The client redirect URI does not match the provided URI.', 'wp_rest_oauth2' ), array( 'status' => 400 ) );
 	}
 
+	// Hash code in order to prevent leaking from DB
+	$code_hash = self::hash_code($code);
+
 	// Setup data for filtering
 	$unfiltered_data = array(
-		'code'			 => $code,
+		'hash'			 => $code_hash,
 		'user_id'		 => intval( $user_id ),
 		'redirect_uri'	 => $redirect_uri,
 		'client_id'		 => get_post_meta( $consumer->ID, 'client_id', true ),
@@ -57,9 +59,9 @@ abstract class WP_REST_OAuth2_Authorization_Code {
 	);
 	$data			 = apply_filters( 'wp_rest_oauth2_authorization_code_data', $unfiltered_data );
 
-	add_option( 'wp_rest_oauth2_code_' . $code, $data );
+	add_option( 'wp_rest_oauth2_code_' . $code_hash , $data );
 
-	return $data;
+	return $code;
   }
 
   /**
@@ -69,7 +71,7 @@ abstract class WP_REST_OAuth2_Authorization_Code {
    * @return bool True, if code is successfully deleted. False on failure.
    */
   public static function revoke_code( $code ) {
-	return delete_option( 'wp_rest_oauth2_code_' . $code );
+	return delete_option( 'wp_rest_oauth2_code_' . self::hash_code( $code ) );
   }
 
   /**
@@ -81,9 +83,20 @@ abstract class WP_REST_OAuth2_Authorization_Code {
 
 	foreach ( $codes as $code ) {
 	  if ( $code[ 'expires' ] >= time() ) {
-		delete_option( 'wp_rest_oauth2_code_' . $code[ 'code' ] );
+		delete_option( 'wp_rest_oauth2_code_' . $code[ 'hash' ] );
 	  }
 	}
+  }
+
+  /**
+   * Hash a code for DB
+   *
+   * @param string $code
+   * @return string Hash
+   */
+  protected static function hash_code( $code ) {
+	$code_hash = wp_hash($code);
+	return $code_hash;
   }
 
 }

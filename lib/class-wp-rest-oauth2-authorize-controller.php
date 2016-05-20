@@ -81,7 +81,7 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 
 	// if we made it this far, everything has checked out and we can begin our logged in check and authorize process.
 	$data = array(
-		'code' => $code[ 'code' ],
+		'code' => $code
 	);
 
 	// If the state is not null, we need to return is as well
