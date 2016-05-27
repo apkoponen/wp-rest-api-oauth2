@@ -3,7 +3,7 @@
 /**
  * Controller for the /authorize/ -endpoint
  */
-class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
+class OA2_Authorize_Controller extends OA2_Server {
 
   // Validate Request
   static function validate( WP_REST_Request $request ) {
@@ -14,16 +14,16 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 	$request_query_params = $request->get_query_params();
 
 	// Check that client exists
-	$consumer = WP_REST_OAuth2_Client::get_by_client_id( $request_query_params[ 'client_id' ] );
+	$consumer = OA2_Client::get_by_client_id( $request_query_params[ 'client_id' ] );
 	if ( is_wp_error( $consumer ) ) {
-	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
-	  return new WP_REST_OAuth2_Response_Controller( $error );
+	  $error = OA2_Error_Helper::get_error( 'invalid_request' );
+	  return new OA2_Response_Controller( $error );
 	}
 
 	// Check redirect_uri
 	if ( empty( $request_query_params[ 'redirect_uri' ] ) ) {
-	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
-	  return new WP_REST_OAuth2_Response_Controller( $error );
+	  $error = OA2_Error_Helper::get_error( 'invalid_request' );
+	  return new OA2_Response_Controller( $error );
 	}
 	$redirect_uri = $request_query_params[ 'redirect_uri' ];
 	if ( !empty( $consumer->redirect_uri ) && $redirect_uri !== $consumer->redirect_uri ) {
@@ -32,17 +32,17 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 
 	// response_type MUST be 'code'
 	if ( empty( $request_query_params[ 'response_type' ] ) ) {
-	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
+	  $error = OA2_Error_Helper::get_error( 'invalid_request' );
 	  self::redirect_with_data($redirect_uri, $error);
 	}
 	if ( $request_query_params[ 'response_type' ] !== 'code' ) {
-	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'unsupported_response_type' );
+	  $error = OA2_Error_Helper::get_error( 'unsupported_response_type' );
 	  self::redirect_with_data($redirect_uri, $error);
 	}
 
 	// Validate scope
-	if ( !empty( $request_query_params[ 'scope' ] ) && !WP_REST_OAuth2_Scope_Helper::validate_scope( $request_query_params[ 'scope' ] ) ) {
-	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_scope' );
+	if ( !empty( $request_query_params[ 'scope' ] ) && !OA2_Scope_Helper::validate_scope( $request_query_params[ 'scope' ] ) ) {
+	  $error = OA2_Error_Helper::get_error( 'invalid_scope' );
 	  self::redirect_with_data($redirect_uri, $error);
 	}
 
@@ -57,7 +57,7 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 	  check_admin_referer( 'oauth2_authorization_' . $request_query_params[ 'redirect_uri' ] . '_' . $request_query_params[ 'client_id' ], '_oauth2_nonce' );
 	  // Check if the user authorized the request
 	  if ( $request_query_params[ 'wp-submit' ] !== 'authorize' ) {
-		$error = WP_REST_OAuth2_Error_Helper::get_error( 'access_denied' );
+		$error = OA2_Error_Helper::get_error( 'access_denied' );
 		self::redirect_with_data($redirect_uri, $error);
 	  }
 	}
@@ -66,13 +66,13 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 	$user_id = get_current_user_id();
 
 	// Set scope
-	$scope = empty( $request_query_params[ 'scope' ] ) ? WP_REST_OAuth2_Scope_Helper::get_all_caps_scope() : $request_query_params[ 'scope' ];
+	$scope = empty( $request_query_params[ 'scope' ] ) ? OA2_Scope_Helper::get_all_caps_scope() : $request_query_params[ 'scope' ];
 
 	// Create authorization code
-	$code = WP_REST_OAuth2_Authorization_Code::generate_code( $request_query_params[ 'client_id' ], $user_id, $request_query_params[ 'redirect_uri' ], time() + 30, $scope );
+	$code = OA2_Authorization_Code::generate_code( $request_query_params[ 'client_id' ], $user_id, $request_query_params[ 'redirect_uri' ], time() + 30, $scope );
 
 	if ( is_wp_error( $code ) ) {
-	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request', $code );
+	  $error = OA2_Error_Helper::get_error( 'invalid_request', $code );
 	  self::redirect_with_data($redirect_uri, $error);
 	}
 

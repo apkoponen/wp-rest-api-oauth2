@@ -67,11 +67,11 @@ $url			 = get_rest_url( null, '/oauth2/v1/authorize/', 'https' );
   <div class="login-scope">
 	<h4><?php _e( 'Capabilities to be granted:', 'oauth2' ); ?></h4>
 	<ul>
-	  <?php if ( $scope === WP_REST_OAuth2_Scope_Helper::get_all_caps_scope() ) : ?>
+	  <?php if ( $scope === OA2_Scope_Helper::get_all_caps_scope() ) : ?>
   	  <li><?php _e( 'All of you capabilities ( * ).', 'oauth2' ); ?></li>
 		<?php
 	  else:
-		$capabilities = WP_REST_OAuth2_Scope_Helper::get_scope_capabilities( $scope );
+		$capabilities = OA2_Scope_Helper::get_scope_capabilities( $scope );
 		foreach ( $capabilities as $capability ):
 		  $description = apply_filters('oauth2_capability_description', $capability, $capability);
 		  ?>

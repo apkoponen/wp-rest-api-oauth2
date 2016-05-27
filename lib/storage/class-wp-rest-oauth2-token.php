@@ -3,7 +3,7 @@
 /**
  * OAuth 2.0 Token base model.
  */
-abstract class WP_REST_OAuth2_Token {
+abstract class OA2_Token {
 
   const TOKEN_KEY_LENGTH = 32;
 
@@ -93,7 +93,7 @@ abstract class WP_REST_OAuth2_Token {
 	$token = apply_filters( 'wp_rest_oauth2_' . $token_type . '_token', wp_generate_password( self::TOKEN_KEY_LENGTH, false ) );
 
 	// Check that client exists
-	$consumer = WP_REST_OAuth2_Client::get_by_client_id( $client_id );
+	$consumer = OA2_Client::get_by_client_id( $client_id );
 	if ( is_wp_error( $consumer ) ) {
 	  return $consumer;
 	}

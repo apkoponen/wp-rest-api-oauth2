@@ -8,7 +8,7 @@
  * Based on WP REST API - OAuth 1.0a Server (https://github.com/WP-API/OAuth2).
  * Used under GPL3 license.
  */
-class WP_REST_OAuth2_UI {
+class OA2_UI {
 
   /**
    * Request token for the current authorization request
@@ -59,13 +59,13 @@ class WP_REST_OAuth2_UI {
   public function render_page() {
 
 	// Check required fields
-	if ( !WP_REST_OAuth2_Authorize_Controller::required_params_exist( $_GET ) ) {
+	if ( !OA2_Authorize_Controller::required_params_exist( $_GET ) ) {
 	  return new WP_Error( 'json_oauth2_missing_param', __( 'Missing parameters', 'oauth2' ), array( 'status' => 400 ) );
 	}
 
 	// Set up fields
-	$consumer = WP_REST_OAuth2_Client::get_by_client_id( $_GET[ 'client_id' ] );
-	$scope = WP_REST_OAuth2_Scope_Helper::get_all_caps_scope();
+	$consumer = OA2_Client::get_by_client_id( $_GET[ 'client_id' ] );
+	$scope = OA2_Scope_Helper::get_all_caps_scope();
 	if ( !empty( $_GET[ 'scope' ] ) ) {
 	  $scope = wp_unslash( $_GET[ 'scope' ] );
 	}

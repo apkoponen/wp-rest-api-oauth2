@@ -37,19 +37,19 @@ require_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-response-controll
 require_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-storage-controller.php' );
 
 // Initiate the server
-add_action( 'rest_api_init', array( 'WP_REST_OAuth2_Server', 'register_routes' ) );
-add_action( 'init', array( 'WP_REST_OAuth2_Server', 'register_storage' ) );
-add_filter( 'rest_index', array( 'WP_REST_OAuth2_Server', 'add_routes_to_index' ) );
-add_action( 'init', array( 'WP_REST_OAuth2_Server', 'init_autheticator' ) );
-add_action( 'plugins_loaded', array( 'WP_REST_OAuth2_Server', 'load_textdomain' ) );
-add_action( 'init', array( 'WP_REST_OAuth2_Server', 'load_authorize_ui' ) );
+add_action( 'rest_api_init', array( 'OA2_Server', 'register_routes' ) );
+add_action( 'init', array( 'OA2_Server', 'register_storage' ) );
+add_filter( 'rest_index', array( 'OA2_Server', 'add_routes_to_index' ) );
+add_action( 'init', array( 'OA2_Server', 'init_autheticator' ) );
+add_action( 'plugins_loaded', array( 'OA2_Server', 'load_textdomain' ) );
+add_action( 'init', array( 'OA2_Server', 'load_authorize_ui' ) );
 
 /**
  * OAuth2 Rest Server Main Class.
  *
  * This class is used to
  */
-class WP_REST_OAuth2_Server {
+class OA2_Server {
 
   public static $authenticator = null;
 
@@ -65,7 +65,7 @@ class WP_REST_OAuth2_Server {
 	// Registers the authorize endpoint
 	register_rest_route( 'oauth2/v1', '/authorize', array(
 		'methods'	 => 'GET',
-		'callback'	 => array( 'WP_REST_OAuth2_Authorize_Controller', 'validate' ),
+		'callback'	 => array( 'OA2_Authorize_Controller', 'validate' ),
 		/*'args'		 => array(
 			'client_id'		 => array(
 				'required' => true
@@ -88,7 +88,7 @@ class WP_REST_OAuth2_Server {
 	// Registers the token endpoint
 	register_rest_route( 'oauth2/v1', '/token', array(
 		'methods'	 => 'POST',
-		'callback'	 => array( 'WP_REST_OAuth2_Token_Controller', 'validate' ),
+		'callback'	 => array( 'OA2_Token_Controller', 'validate' ),
 		/*'args'		 => array(
 			'client_id'		 => array(
 				'required' => true,
@@ -171,14 +171,14 @@ class WP_REST_OAuth2_Server {
   static function init_autheticator() {
 	include_once( dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-authenticator.php' );
 
-	self::$authenticator = new WP_REST_OAuth2_Authenticator();
+	self::$authenticator = new OA2_Authenticator();
   }
 
   /**
    * Register the authorization page
    */
   static function load_authorize_ui() {
-	$authorize_ui = new WP_REST_OAuth2_UI();
+	$authorize_ui = new OA2_UI();
 	$authorize_ui->register_hooks();
   }
 

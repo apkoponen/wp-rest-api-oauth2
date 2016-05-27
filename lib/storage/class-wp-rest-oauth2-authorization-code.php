@@ -2,7 +2,7 @@
 /**
  * OAuth 2.0 Authorization code model.
  */
-abstract class WP_REST_OAuth2_Authorization_Code {
+abstract class OA2_Authorization_Code {
 
   const AUTHORIZATION_CODE_LENGTH = 32;
 
@@ -35,7 +35,7 @@ abstract class WP_REST_OAuth2_Authorization_Code {
 	$code = apply_filters( 'wp_rest_oauth2_authorization_code', wp_generate_password( self::AUTHORIZATION_CODE_LENGTH, false ) );
 
 	// Check that client exists
-	$consumer = WP_REST_OAuth2_Client::get_by_client_id( $client_id );
+	$consumer = OA2_Client::get_by_client_id( $client_id );
 	if ( is_wp_error( $consumer ) ) {
 	  return $consumer;
 	}

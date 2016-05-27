@@ -6,7 +6,7 @@
  * Based on WP REST API - OAuth 1.0a Server (https://github.com/WP-API/OAuth1).
  * Used under GPL3 license.
  */
-class WP_REST_OAuth2_Authenticator {
+class OA2_Authenticator {
 
   /**
    * Errors that occurred during authentication
@@ -39,14 +39,14 @@ class WP_REST_OAuth2_Authenticator {
 	}
 
 	// Check if token is in request
-	$bearer_token = WP_REST_OAuth2_Header_Helper::get_authorization_bearer();
+	$bearer_token = OA2_Header_Helper::get_authorization_bearer();
 	if ( empty( $bearer_token ) ) {
 	  $this->auth_status = $bearer_token;
 	  return null;
 	}
 
 	// Fetch user by token key
-	$token = WP_REST_OAuth2_Access_Token::get_token( $bearer_token );
+	$token = OA2_Access_Token::get_token( $bearer_token );
 	if ( is_wp_error( $token ) ) {
 	  $this->auth_status = $token;
 	  return null;
@@ -111,8 +111,8 @@ class WP_REST_OAuth2_Authenticator {
 	// and token has limited scope.
 	if ( !empty( $this->auth_status ) && !empty( $this->authorized_token ) &&
 			$user->ID === absint($this->authorized_token[ 'user_id' ]) &&
-			$this->authorized_token[ 'scope' ] !== WP_REST_OAuth2_Scope_Helper::get_all_caps_scope() ) {
-	  $scope_capabilities = WP_REST_OAuth2_Scope_Helper::get_scope_capabilities( $this->authorized_token[ 'scope' ] );
+			$this->authorized_token[ 'scope' ] !== OA2_Scope_Helper::get_all_caps_scope() ) {
+	  $scope_capabilities = OA2_Scope_Helper::get_scope_capabilities( $this->authorized_token[ 'scope' ] );
 
 	  // Only allow capabilities that are in scope and are allowed for user
 	  $allowed_capabilities = [];

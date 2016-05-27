@@ -5,7 +5,7 @@
  * Based on WP REST API - OAuth 1.0a Server (https://github.com/WP-API/OAuth1).
  * Used under GPL3 license.
  */
-class WP_REST_OAuth2_ListTable extends WP_List_Table {
+class OA2_ListTable extends WP_List_Table {
 
 	public function prepare_items() {
 		$paged = $this->get_pagenum();
@@ -14,7 +14,7 @@ class WP_REST_OAuth2_ListTable extends WP_List_Table {
 			'paged' => $paged
 		);
 
-		$query = WP_REST_OAuth2_Client::get_clients_query($additional_args);
+		$query = OA2_Client::get_clients_query($additional_args);
 		$this->items = $query->posts;
 
 		$pagination_args = array(

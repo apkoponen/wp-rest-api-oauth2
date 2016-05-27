@@ -4,7 +4,7 @@
  * Helpers for scope handling.
  *
  */
-class WP_REST_OAuth2_Scope_Helper {
+class OA2_Scope_Helper {
 
   /**
    * Validate that the given scope is a valid scope.

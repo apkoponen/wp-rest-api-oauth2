@@ -5,7 +5,7 @@
  * Based on WP REST API - OAuth 1.0a Server (https://github.com/WP-API/OAuth1).
  * Used under GPL3 license.
  */
-class WP_REST_OAuth2_Header_Helper {
+class OA2_Header_Helper {
 
   /**
    * Parse the Authorization header for Bearer token

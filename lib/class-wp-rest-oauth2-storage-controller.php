@@ -4,7 +4,7 @@
  * 
  * This class is a simple storage class that utilizes $wpdb and WordPress's options API
  */
-class WP_REST_OAuth2_Storage_Controller extends WP_REST_OAuth2_Server {
+class OA2_Storage_Controller extends OA2_Server {
 
   /**
    * Checks to see if the given client is registered and will return true is found and false is not found.
@@ -15,7 +15,7 @@ class WP_REST_OAuth2_Storage_Controller extends WP_REST_OAuth2_Server {
    * @return Bool          [description]
    */
   static function validateClient( $client_id ) {
-	$consumer = WP_REST_OAuth2_Client::get_by_client_id( $client_id );
+	$consumer = OA2_Client::get_by_client_id( $client_id );
 
 	if ( is_wp_error( $consumer ) ) {
 	  return false;
@@ -34,7 +34,7 @@ class WP_REST_OAuth2_Storage_Controller extends WP_REST_OAuth2_Server {
    * @return Bool True on successfull authentication, false otherwise
    */
   static function authenticateClient( $client_id,  $client_secret) {
-	$consumer = WP_REST_OAuth2_Client::get_by_client_id( $client_id );
+	$consumer = OA2_Client::get_by_client_id( $client_id );
 
 	if ( is_wp_error( $consumer ) ||
 		  $consumer->client_secret !== $client_secret ) {

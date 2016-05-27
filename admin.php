@@ -8,7 +8,7 @@
 
 require dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-admin.php';
 
-add_action( 'admin_menu', array( 'WP_REST_OAuth2_Admin', 'register' ) );
+add_action( 'admin_menu', array( 'OA2_Admin', 'register' ) );
 
 add_action( 'personal_options', 'wp_rest_oauth2_profile_section', 50 );
 
@@ -32,7 +32,7 @@ function wp_rest_oauth2_profile_section( $user ) {
 			)
 		)
 	);
-	$access_tokens = WP_REST_OAuth2_Access_Token::get_tokens( $query_args );
+	$access_tokens = OA2_Access_Token::get_tokens( $query_args );
 	?>
 		<table class="form-table">
 			<tbody>
@@ -50,7 +50,7 @@ function wp_rest_oauth2_profile_section( $user ) {
 							<tbody>
 							<?php foreach ( $access_tokens as $access_token ): ?>
 								<?php
-								$application = WP_REST_OAuth2_Client::get_by_client_id( $access_token->client_id );
+								$application = OA2_Client::get_by_client_id( $access_token->client_id );
 								?>
 								<tr>
 									<td><?php echo esc_html( $application->post_title ) ?></td>
@@ -93,7 +93,7 @@ function wp_rest_oauth2_profile_save( $user_id ) {
 	}
 
 	$post_id = intval( $_POST['wp_rest_oauth2_revoke'] );
-	$token = WP_REST_OAuth2_Access_Token::get_token_by_id( $post_id );
+	$token = OA2_Access_Token::get_token_by_id( $post_id );
 
 	// Check that the request is valid and the user has access.
 	if ( is_wp_error( $token ) || 
@@ -105,7 +105,7 @@ function wp_rest_oauth2_profile_save( $user_id ) {
 		);
 	}
 
-	$result = WP_REST_OAuth2_Access_Token::revoke_token( $token[ 'token' ] );
+	$result = OA2_Access_Token::revoke_token( $token[ 'token' ] );
 
 	if ( is_wp_error( $result ) || $result === false ) {
 		$redirect = add_query_arg( 'wp_rest_oauth2_revocation_failed', true, get_edit_user_link( $user_id ) );

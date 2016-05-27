@@ -4,7 +4,7 @@
  * Used under GPL3 license.
  */
 
-class WP_REST_OAuth2_Admin {
+class OA2_Admin {
 	const BASE_SLUG = 'rest-oauth2-apps';
 
 	/**
@@ -75,7 +75,7 @@ class WP_REST_OAuth2_Admin {
 			default:
 				global $wp_list_table;
 
-				$wp_list_table = new WP_REST_OAuth2_ListTable();
+				$wp_list_table = new OA2_ListTable();
 
 				$wp_list_table->prepare_items();
 
@@ -184,7 +184,7 @@ class WP_REST_OAuth2_Admin {
 		}
 
 		if ( empty( $consumer ) ) {
-			//$authenticator = new WP_REST_OAuth2();
+			//$authenticator = new OA2();
 
 			// Create the consumer
 			$data = array(
@@ -194,7 +194,7 @@ class WP_REST_OAuth2_Admin {
 					'redirect_uri' => $params['redirect_uri'],
 				),
 			);
-			$consumer = $result = WP_REST_OAuth2_Client::create( $data );
+			$consumer = $result = OA2_Client::create( $data );
 		}
 		else {
 			// Update the existing consumer post
@@ -239,7 +239,7 @@ class WP_REST_OAuth2_Admin {
 		$form_action = self::get_url('action=add');
 		if ( ! empty( $_REQUEST['id'] ) ) {
 			$id = absint( $_REQUEST['id'] );
-			$consumer = WP_REST_OAuth2_Client::get( $id );
+			$consumer = OA2_Client::get( $id );
 			if ( is_wp_error( $consumer ) || empty( $consumer ) ) {
 				wp_die( __( 'Invalid consumer ID.', 'wp_rest_oauth2' ) );
 			}
@@ -401,7 +401,7 @@ class WP_REST_OAuth2_Admin {
 			);
 		}
 
-		$client = WP_REST_OAuth2_Client::get( $id );
+		$client = OA2_Client::get( $id );
 		if ( is_wp_error( $client ) ) {
 			wp_die( $client );
 			return;
@@ -433,7 +433,7 @@ class WP_REST_OAuth2_Admin {
 			);
 		}
 
-		$client = WP_REST_OAuth2_Client::get( $id );
+		$client = OA2_Client::get( $id );
 		$client->regenerate_secret();
 
 		wp_safe_redirect( self::get_url( array( 'action' => 'edit', 'id' => $id, 'did_action' => 'regenerate' ) ) );
