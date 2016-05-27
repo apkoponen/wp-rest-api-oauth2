@@ -1,4 +1,4 @@
-# [WP REST API - OAuth 2.0 Server](http://rest.wp-oauth.com/)
+# WP REST API - OAuth 2.0 Server
 
 OAuth2 Flow for providing authorization access to WordPress REST API.
 
