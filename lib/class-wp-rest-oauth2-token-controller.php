@@ -1,7 +1,6 @@
 <?php
-
 /**
- * @TODO Store used access tokens in order to check reuse.
+ * Controller for the /token/ -endpoint
  */
 class WP_REST_OAuth2_Token_Controller extends WP_REST_OAuth2_Server {
 
