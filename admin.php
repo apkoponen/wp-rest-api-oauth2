@@ -6,7 +6,7 @@
  * Used under GPL3 license.
  */
 
-require dirname( __FILE__ ) . '/lib/class-wp-rest-oauth2-admin.php';
+require dirname( __FILE__ ) . '/lib/class-oa2-admin.php';
 
 add_action( 'admin_menu', array( 'OA2_Admin', 'register' ) );
 

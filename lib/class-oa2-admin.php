@@ -14,7 +14,7 @@ class OA2_Admin {
 		/**
 		 * Include anything we need that relies on admin classes/functions
 		 */
-		include_once dirname( __FILE__ ) . '/class-wp-rest-oauth2-listtable.php';
+		include_once dirname( __FILE__ ) . '/class-oa2-listtable.php';
 
 		$hook = add_users_page(
 			// Page title
