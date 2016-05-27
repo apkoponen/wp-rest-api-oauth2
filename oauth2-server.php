@@ -66,43 +66,12 @@ class OA2_Server {
 	register_rest_route( 'oauth2/v1', '/authorize', array(
 		'methods'	 => 'GET',
 		'callback'	 => array( 'OA2_Authorize_Controller', 'validate' ),
-		/*'args'		 => array(
-			'client_id'		 => array(
-				'required' => true
-			),
-			'response_type'	 => array(
-				'required' => true,
-			),
-			'redirect_uri'	 => array(
-				'required' => true,
-			),
-			'scope'			 => array(
-				'required' => false
-			),
-			'state'			 => array(
-				'required' => false,
-			)
-		)*/
 	) );
 
 	// Registers the token endpoint
 	register_rest_route( 'oauth2/v1', '/token', array(
 		'methods'	 => 'POST',
 		'callback'	 => array( 'OA2_Token_Controller', 'validate' ),
-		/*'args'		 => array(
-			'client_id'		 => array(
-				'required' => true,
-			),
-			'client_secret'	  => array(
-				'required' => true,
-			),
-			'grant_type'	 => array(
-				'required' => true,
-			),
-			'redirect_uri'	 => array(
-				'required' => true,
-			)
-		)*/
 	) );
   }
 
