@@ -116,7 +116,7 @@ class OA2_UI {
    * @param WP_Error $error Error object
    */
   public function display_error( WP_Error $error ) {
-	login_header( __( 'Error', 'oauth2' ), '', $error );
+	login_header( __( 'Error', 'wp_rest_oauth2' ), '', $error );
 	login_footer();
   }
 
