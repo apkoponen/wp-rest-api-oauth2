@@ -173,6 +173,72 @@ abstract class OA2_Token {
   }
 
   /**
+   * Revokes tokens created with the given authorization code
+   *
+   * @param string $auth_code Authorization code.
+   * @return array Array of the deleted tokens.
+   */
+  public static function revoke_tokens_by_auth_code( $auth_code ) {
+	$class = function_exists( 'get_called_class' ) ? get_called_class() : self::get_called_class();
+	$token_type	 = $class::get_type();
+
+	$args = array(
+		'post_type' => 'oauth2_' . $token_type . '_token',
+		'post_status' => 'any',
+		'meta_query' => array(
+			array(
+				'key' => 'authorization_code',
+				'value' => OA2_Authorization_Code::hash_code( $auth_code ),
+			)
+		)
+	);
+
+	return $class::revoke_tokens_by_args( $args );
+  }
+
+  /**
+   * Revokes tokens created with the given authorization code
+   *
+   * @param string $refresh_token Refresh token
+   * @return array Array of the deleted tokens.
+   */
+  public static function revoke_tokens_by_refresh_token( $refresh_token ) {
+	$class = function_exists( 'get_called_class' ) ? get_called_class() : self::get_called_class();
+	$token_type	 = $class::get_type();
+
+	$args = array(
+		'post_type' => 'oauth2_' . $token_type . '_token',
+		'post_status' => 'any',
+		'meta_query' => array(
+			array(
+				'key' => 'refresh_token',
+				'value' => OA2_Refresh_Token::hash_token( $refresh_token ),
+			)
+		)
+	);
+
+	return $class::revoke_tokens_by_args( $args );
+  }
+
+  /**
+   * Revoke posts matching the given query args.
+   *
+   * @param array $args
+   * @return array array Array of the deleted tokens.
+   */
+  public static function revoke_tokens_by_args( $args ) {
+	$query = new WP_query( $args );
+	$deleted_posts = array();
+	foreach( $query->posts as $post ) {
+	  $result = wp_delete_post( $post->ID, true );
+	  if ( $result !== false ) {
+		$deleted_posts[] = $result;
+	  }
+	}
+	return $deleted_posts;
+  }
+
+  /**
    * Check if given post object is a valid token.
    *
    * @param WP_Post $post

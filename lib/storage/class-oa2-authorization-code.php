@@ -94,7 +94,7 @@ abstract class OA2_Authorization_Code {
    * @param string $code
    * @return string Hash
    */
-  protected static function hash_code( $code ) {
+  public static function hash_code( $code ) {
 	$code_hash = wp_hash($code);
 	return $code_hash;
   }

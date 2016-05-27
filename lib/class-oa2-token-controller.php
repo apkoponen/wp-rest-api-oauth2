@@ -63,16 +63,29 @@ class OA2_Token_Controller {
   static function handleAuthorizationCode ( WP_REST_Request $request ) {
 	$request_body_params = $request->get_body_params();
 
-	// Check that redirect_uri is set
-	if ( empty( $request_body_params[ 'redirect_uri' ] ) ) {
+	// Check that redirect_uri and code is set
+	if ( empty( $request_body_params[ 'redirect_uri' ]) || empty( $request_body_params[ 'code' ] ) ) {
 	  $error = OA2_Error_Helper::get_error( 'invalid_request' );
 	  return new WP_REST_Response( $error );
 	}
 
-	$code = OA2_Authorization_Code::get_authorization_code( $request_body_params[ 'code' ] );
+	$request_code = $request_body_params[ 'code' ];
+	$code = OA2_Authorization_Code::get_authorization_code( $request_code );
 
 	// Authorization code MUST exist
 	if ( empty( $code ) ) {
+	  // Ensure that all tokens created with the code are removed.
+	  $access_tokens = OA2_Access_Token::revoke_tokens_by_auth_code( $request_code );
+	  $refresh_tokens = OA2_Refresh_Token::revoke_tokens_by_auth_code( $request_code );
+
+	  // Log the incident
+	  error_log(
+			  'Authorization code not found. Possibly a code replay.' .
+			  ' Code: ' . $request_code .
+			  ' Revoked access tokens: ' . print_r( $access_tokens, true ) .
+			  ' Revoked refresh tokens: ' . print_r( $refresh_tokens, true )
+	  );
+
 	  $error = OA2_Error_Helper::get_error( 'invalid_request' );
 	  return new WP_REST_Response( $error );
 	}
@@ -88,7 +101,7 @@ class OA2_Token_Controller {
 	}
 
 	// Codes are single use, remove it
-	if ( !OA2_Authorization_Code::revoke_code( $request_body_params[ 'code' ] ) ) {
+	if ( !OA2_Authorization_Code::revoke_code( $request_code ) ) {
 	  $error = OA2_Error_Helper::get_error( 'server_error' );
 
 	  return new WP_REST_Response( $error );
@@ -127,8 +140,19 @@ class OA2_Token_Controller {
 
 	// Refresh token MUST exist
 	if ( is_wp_error( $refresh_token ) ) {
-	  $error = OA2_Error_Helper::get_error( 'invalid_grant' );
+	  // Ensure that all tokens created with the code are removed.
+	  $access_tokens = OA2_Access_Token::revoke_tokens_by_refresh_token( $request_refresh_token );
+	  $refresh_tokens = OA2_Refresh_Token::revoke_tokens_by_refresh_token( $request_refresh_token );
 
+	  // Log the incident
+	  error_log(
+			  'Refresh token not found. Possibly a refresh token replay.' .
+			  ' Refresh token: ' . $request_refresh_token .
+			  ' Revoked access tokens: ' . print_r( $access_tokens, true ) .
+			  ' Revoked refresh tokens: ' . print_r( $refresh_tokens, true )
+	  );
+
+	  $error = OA2_Error_Helper::get_error( 'invalid_grant' );
 	  return new WP_REST_Response( $error );
 	}
 
