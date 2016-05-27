@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: WP REST OAuth2 Server
- * Plugin URI: http://rest.wp-oauth.com
+ * Plugin Name: WP REST API - OAuth 2.0 Server
+ * Plugin URI: https://github.com/apkoponen/wp-rest-api-oauth2
  * Description: OAuth2 Flow for providing authorization access to WordPress REST API.
  * Version: 1.0.0
  * Author: justingreerbbi, ap.koponen
