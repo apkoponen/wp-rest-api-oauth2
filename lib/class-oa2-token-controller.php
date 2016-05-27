@@ -24,7 +24,7 @@ class OA2_Token_Controller {
 	if ( $required_missing ) {
 	  $error = OA2_Error_Helper::get_error( 'invalid_request' );
 
-	  return new OA2_Response_Controller( $error );
+	  return new WP_REST_Response( $error );
 	}
 
 	// Check that client credentials are valid
@@ -32,14 +32,14 @@ class OA2_Token_Controller {
 	if ( !OA2_Storage_Controller::authenticateClient( $request_body_params[ 'client_id' ], $request_body_params[ 'client_secret' ] ) ) {
 	  $error = OA2_Error_Helper::get_error( 'invalid_request' );
 
-	  return new OA2_Response_Controller( $error );
+	  return new WP_REST_Response( $error );
 	}
 
 	$supported_grant_types = apply_filters( 'wp_rest_oauth2_grant_types', array( 'authorization_code', 'refresh_token' ) );
 
 	if ( !in_array( $request_body_params[ 'grant_type' ], $supported_grant_types ) ) {
 	  $error = OA2_Error_Helper::get_error( 'unsupported_grant_type' );
-	  return new OA2_Response_Controller( $error );
+	  return new WP_REST_Response( $error );
 	}
 
 	$class = function_exists( 'get_called_class' ) ? get_called_class() : self::get_called_class();
@@ -58,7 +58,7 @@ class OA2_Token_Controller {
    * Handle grant_type 'authorization_code'
    *
    * @param WP_REST_Request $request
-   * @return \OA2_Response_Controller
+   * @return \WP_REST_Response
    */
   static function handleAuthorizationCode ( WP_REST_Request $request ) {
 	$request_body_params = $request->get_body_params();
@@ -66,7 +66,7 @@ class OA2_Token_Controller {
 	// Check that redirect_uri is set
 	if ( empty( $request_body_params[ 'redirect_uri' ] ) ) {
 	  $error = OA2_Error_Helper::get_error( 'invalid_request' );
-	  return new OA2_Response_Controller( $error );
+	  return new WP_REST_Response( $error );
 	}
 
 	$code = OA2_Authorization_Code::get_authorization_code( $request_body_params[ 'code' ] );
@@ -74,7 +74,7 @@ class OA2_Token_Controller {
 	// Authorization code MUST exist
 	if ( empty( $code ) ) {
 	  $error = OA2_Error_Helper::get_error( 'invalid_request' );
-	  return new OA2_Response_Controller( $error );
+	  return new WP_REST_Response( $error );
 	}
 
 	// Authorization code redirect URI and client MUST match, and the code should not have expired
@@ -84,14 +84,14 @@ class OA2_Token_Controller {
 	if ( !$is_valid_redirect_uri || !$is_valid_client || $code_has_expired ) {
 	  $error = OA2_Error_Helper::get_error( 'invalid_request' );
 
-	  return new OA2_Response_Controller( $error );
+	  return new WP_REST_Response( $error );
 	}
 
 	// Codes are single use, remove it
 	if ( !OA2_Authorization_Code::revoke_code( $request_body_params[ 'code' ] ) ) {
 	  $error = OA2_Error_Helper::get_error( 'server_error' );
 
-	  return new OA2_Response_Controller( $error );
+	  return new WP_REST_Response( $error );
 	}
 
 	// Store authorization code hash to access token (for possible revocation).
@@ -111,14 +111,14 @@ class OA2_Token_Controller {
 		"refresh_token" => $refresh_token[ 'token' ]
 	);
 
-	return new OA2_Response_Controller( $data );
+	return new WP_REST_Response( $data );
   }
 
   /**
    * Handle grant_type 'refresh_token'
    *
    * @param WP_REST_Request $request
-   * @return \OA2_Response_Controller
+   * @return \WP_REST_Response
    */
   static function handleRefreshToken ( WP_REST_Request $request ) {
 	$request_body_params = $request->get_body_params();
@@ -129,7 +129,7 @@ class OA2_Token_Controller {
 	if ( is_wp_error( $refresh_token ) ) {
 	  $error = OA2_Error_Helper::get_error( 'invalid_grant' );
 
-	  return new OA2_Response_Controller( $error );
+	  return new WP_REST_Response( $error );
 	}
 
 	// Refresh token client MUST match, and the code should not have expired
@@ -137,14 +137,14 @@ class OA2_Token_Controller {
 	if ( !$is_valid_client ) {
 	  $error = OA2_Error_Helper::get_error( 'invalid_request' );
 
-	  return new OA2_Response_Controller( $error );
+	  return new WP_REST_Response( $error );
 	}
 
 	$code_has_expired = $refresh_token[ 'expires' ] < time();
 	if ( $code_has_expired ) {
 	  $error = OA2_Error_Helper::get_error( 'invalid_grant' );
 
-	  return new OA2_Response_Controller( $error );
+	  return new WP_REST_Response( $error );
 	}
 
 	// Requested scope should be a subset of the Refresh Token scope.
@@ -170,7 +170,7 @@ class OA2_Token_Controller {
 		if ( !$scope_allowed ) {
 		  $error = OA2_Error_Helper::get_error( 'invalid_scope' );
 
-		  return new OA2_Response_Controller( $error );
+		  return new WP_REST_Response( $error );
 		}
 	  }
 	}
@@ -179,7 +179,7 @@ class OA2_Token_Controller {
 	if ( !OA2_Refresh_Token::revoke_token( $request_refresh_token ) ) {
 	  $error = OA2_Error_Helper::get_error( 'server_error' );
 
-	  return new OA2_Response_Controller( $error );
+	  return new WP_REST_Response( $error );
 	}
 
 	// Store refresh token to access token (for possible revocation).
@@ -199,7 +199,7 @@ class OA2_Token_Controller {
 		"refresh_token" => $new_refresh_token[ 'token' ]
 	);
 
-	return new OA2_Response_Controller( $data );
+	return new WP_REST_Response( $data );
   }
 
 }

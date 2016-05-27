@@ -17,13 +17,13 @@ class OA2_Authorize_Controller {
 	$consumer = OA2_Client::get_by_client_id( $request_query_params[ 'client_id' ] );
 	if ( is_wp_error( $consumer ) ) {
 	  $error = OA2_Error_Helper::get_error( 'invalid_request' );
-	  return new OA2_Response_Controller( $error );
+	  return new WP_REST_Response( $error );
 	}
 
 	// Check redirect_uri
 	if ( empty( $request_query_params[ 'redirect_uri' ] ) ) {
 	  $error = OA2_Error_Helper::get_error( 'invalid_request' );
-	  return new OA2_Response_Controller( $error );
+	  return new WP_REST_Response( $error );
 	}
 	$redirect_uri = $request_query_params[ 'redirect_uri' ];
 	if ( !empty( $consumer->redirect_uri ) && $redirect_uri !== $consumer->redirect_uri ) {

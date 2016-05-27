@@ -33,7 +33,6 @@ require_once( dirname( __FILE__ ) . '/admin.php' );
 // Require
 require_once( dirname( __FILE__ ) . '/lib/class-oa2-authorize-controller.php' );
 require_once( dirname( __FILE__ ) . '/lib/class-oa2-token-controller.php' );
-require_once( dirname( __FILE__ ) . '/lib/class-oa2-response-controller.php' );
 require_once( dirname( __FILE__ ) . '/lib/class-oa2-storage-controller.php' );
 
 // Initiate the server
