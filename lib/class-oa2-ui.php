@@ -60,23 +60,27 @@ class OA2_UI {
 
 	// Check required fields
 	if ( !OA2_Authorize_Controller::required_params_exist( $_GET ) ) {
-	  return new WP_Error( 'json_oauth2_missing_param', __( 'Missing parameters', 'oauth2' ), array( 'status' => 400 ) );
+	  $error_code = 'invalid_request';
+	  return new WP_Error( $error_code, OA2_Error_Helper::get_error_description( $error_code ), array( 'status' => 400 ) );
 	}
 
 	// Set up fields
 	$consumer = OA2_Client::get_by_client_id( $_GET[ 'client_id' ] );
 	$scope = OA2_Scope_Helper::get_all_caps_scope();
 	if ( !empty( $_GET[ 'scope' ] ) ) {
-	  $scope = wp_unslash( $_GET[ 'scope' ] );
+	  if(!OA2_Scope_Helper::validate_scope( $_GET[ 'scope' ] )) {
+		$error_code = 'invalid_scope';
+		return new WP_Error( $error_code, OA2_Error_Helper::get_error_description( $error_code ), array( 'status' => 400 ) );
+	  }
+	  $scope = $_GET[ 'scope' ];
 	}
 	$state = '';
 	if ( !empty( $_GET[ 'state' ] ) ) {
 	  $state = $_GET[ 'state' ];
 	}
-	$errors = array();
 
-	$this->redirect_uri	 = $_GET[ 'redirect_uri' ];
-	$this->response_type = $_GET[ 'response_type' ];
+	$this->redirect_uri	 = esc_url($_GET[ 'redirect_uri' ]);
+	$this->response_type = sanitize_key($_GET[ 'response_type' ]);
 	$this->state		 = $state;
 	$this->consumer		 = $consumer;
 	$this->scope		 = $scope;
@@ -86,6 +90,7 @@ class OA2_UI {
 	  $file = dirname( dirname( __FILE__ ) ) . '/templates/oauth2-authorize.php';
 	}
 
+	$errors = array();
 	include $file;
   }
 
