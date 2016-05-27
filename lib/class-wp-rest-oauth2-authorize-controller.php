@@ -1,52 +1,49 @@
 <?php
 
 /**
- * WP_REST_OAuth2_Authorize_Controller is used for authorizing a user using the web based Auth Code grant type.
- * 
+ * Controller for the /authorize/ -endpoint
  */
 class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 
-  /**
-   * State property
-   * @var string
-   */
-  static public $state;
-
   // Validate Request
-  static function validate ( WP_REST_Request $request ) {
-	if ( !is_ssl() && ( !defined( 'WP_REST_OAUTH2_TEST_MODE' ) || !WP_REST_OAUTH2_TEST_MODE ) ) {
+  static function validate( WP_REST_Request $request ) {
+	if ( !is_ssl() && (!defined( 'WP_REST_OAUTH2_TEST_MODE' ) || !WP_REST_OAUTH2_TEST_MODE ) ) {
 	  return new WP_Error( 'SSL is required' );
 	}
 
-	// Set state if provided
-	self::setState( $request );
-
-	// Check if required params exist
 	$request_query_params = $request->get_query_params();
-	$required_exist = self::requiredParamsExist( $request_query_params );
 
-	if ( !$required_exist ) {
+	// Check that client exists
+	$consumer = WP_REST_OAuth2_Client::get_by_client_id( $request_query_params[ 'client_id' ] );
+	if ( is_wp_error( $consumer ) ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
 	  return new WP_REST_OAuth2_Response_Controller( $error );
 	}
 
-	// Check id client ID is valid.
-	// We may be able to move this up in the first check as well
-	if ( !WP_REST_OAuth2_Storage_Controller::validateClient( $request_query_params[ 'client_id' ] ) ) {
+	// Check redirect_uri
+	if ( empty( $request_query_params[ 'redirect_uri' ] ) ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
 	  return new WP_REST_OAuth2_Response_Controller( $error );
 	}
+	$redirect_uri = $request_query_params[ 'redirect_uri' ];
+	if ( !empty( $consumer->redirect_uri ) && $redirect_uri !== $consumer->redirect_uri ) {
+	  return new WP_Error( 'oauth2_redirect_uri_mismatch', __( 'The client redirect URI does not match the provided URI.', 'wp_rest_oauth2' ), array( 'status' => 400 ) );
+	}
 
-	// Response type MUST be 'code'
-	if ( !self::validateResponseType( $request_query_params[ 'response_type' ] ) ) {
+	// response_type MUST be 'code'
+	if ( empty( $request_query_params[ 'response_type' ] ) ) {
+	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request' );
+	  self::redirect_with_data($redirect_uri, $error);
+	}
+	if ( $request_query_params[ 'response_type' ] !== 'code' ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'unsupported_response_type' );
-	  return new WP_REST_OAuth2_Response_Controller( $error );
+	  self::redirect_with_data($redirect_uri, $error);
 	}
 
 	// Validate scope
-	if(!empty($request_query_params['scope']) && !WP_REST_OAuth2_Scope_Helper::validate_scope( $request_query_params['scope'] )) {
+	if ( !empty( $request_query_params[ 'scope' ] ) && !WP_REST_OAuth2_Scope_Helper::validate_scope( $request_query_params[ 'scope' ] ) ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_scope' );
-	  return new WP_REST_OAuth2_Response_Controller( $error );
+	  self::redirect_with_data($redirect_uri, $error);
 	}
 
 	// Check if we're past authorization
@@ -61,7 +58,7 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 	  // Check if the user authorized the request
 	  if ( $request_query_params[ 'wp-submit' ] !== 'authorize' ) {
 		$error = WP_REST_OAuth2_Error_Helper::get_error( 'access_denied' );
-		return new WP_REST_OAuth2_Response_Controller( $error );
+		self::redirect_with_data($redirect_uri, $error);
 	  }
 	}
 
@@ -72,44 +69,37 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 	$scope = empty( $request_query_params[ 'scope' ] ) ? WP_REST_OAuth2_Scope_Helper::get_all_caps_scope() : $request_query_params[ 'scope' ];
 
 	// Create authorization code
-	$code = WP_REST_OAuth2_Authorization_Code::generate_code( $request[ 'client_id' ], $user_id, $request[ 'redirect_uri' ], time() + 30, $scope );
+	$code = WP_REST_OAuth2_Authorization_Code::generate_code( $request_query_params[ 'client_id' ], $user_id, $request_query_params[ 'redirect_uri' ], time() + 30, $scope );
 
 	if ( is_wp_error( $code ) ) {
 	  $error = WP_REST_OAuth2_Error_Helper::get_error( 'invalid_request', $code );
-	  return new WP_REST_OAuth2_Response_Controller( $error );
+	  self::redirect_with_data($redirect_uri, $error);
 	}
 
-	// if we made it this far, everything has checked out and we can begin our logged in check and authorize process.
+	// if we made it this far, everything has checked out and we redirect with the code.
 	$data = array(
 		'code' => $code
 	);
 
-	// If the state is not null, we need to return is as well
-	if ( !is_null( self::$state ) ) {
-	  $data[ 'state' ] = self::$state;
+	// If the state is not empty, we need to return it as well
+	if ( !empty( $request_query_params[ 'state' ] ) ) {
+	  $data[ 'state' ] = $request_query_params[ 'state' ];
 	}
 
-	$data = array_map( 'rawurlencode', $data );
-	$redirect_url = add_query_arg( $data, $request_query_params[ 'redirect_uri' ] );
-	wp_redirect( $redirect_url );
-	exit;
+	self::redirect_with_data($request_query_params[ 'redirect_uri' ], $data);
   }
 
   /**
-   * Validates the response type
+   * Redirect using data as parameters.
    *
-   * According to OAuth2 Draft, the only supported response type for an auth code flow is code.
-   *
-   * @see  https://tools.ietf.org/html/draft-ietf-oauth-v2-31#section-4.1.1
-   *
-   * @param  [type] $response [description]
-   * @return [type]           [description]
+   * @param type $redirect_uri URI to redirect to.
+   * @param type $data Data to rawurlencode and add as query args.
    */
-  static public function validateResponseType ( $response ) {
-	if ( 'code' !== $response ) {
-	  return false;
-	}
-	return true;
+  static public function redirect_with_data($redirect_uri, $data) {
+	$urlencoded_data = array_map( 'rawurlencode', $data );
+	$redirect_url = add_query_arg( $urlencoded_data, $redirect_uri );
+	wp_redirect( $redirect_url );
+	exit;
   }
 
   /**
@@ -118,7 +108,7 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
    * @param  Array	  $request_query_params	  Key-value array to check.
    * @return Boolean  True if all exist
    */
-  static public function requiredParamsExist ( $request_query_params ) {
+  static public function required_params_exist( $request_query_params ) {
 	$required_params = array( 'client_id', 'response_type', 'redirect_uri' );
 	$required_missing = false;
 	foreach( $required_params as $required_param ) {
@@ -128,10 +118,6 @@ class WP_REST_OAuth2_Authorize_Controller extends WP_REST_OAuth2_Server {
 	}
 	$params_exist = !$required_missing;
 	return $params_exist;
-  }
-
-  static public function setState ( $request ) {
-	self::$state = isset( $request[ 'state' ] ) ? $request[ 'state' ] : null;
   }
 
 }

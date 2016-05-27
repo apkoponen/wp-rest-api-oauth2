@@ -59,7 +59,7 @@ class WP_REST_OAuth2_UI {
   public function render_page() {
 
 	// Check required fields
-	if ( !WP_REST_OAuth2_Authorize_Controller::requiredParamsExist( $_GET ) ) {
+	if ( !WP_REST_OAuth2_Authorize_Controller::required_params_exist( $_GET ) ) {
 	  return new WP_Error( 'json_oauth2_missing_param', __( 'Missing parameters', 'oauth2' ), array( 'status' => 400 ) );
 	}
 
