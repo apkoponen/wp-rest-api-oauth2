@@ -55,10 +55,6 @@ class OA2_Server {
   /**
    * Registers routes needed for the OAuth2 Server
    *
-   * @todo  Deturmine if we really want to call the args parameter when registering the route.
-   * The REST API does not return the correct format needed if we run them through the args.
-   * Currently validation is done in the authorize controller but there may be be better way of doing it.
-   * 
    */
   static function register_routes() {
 	// Registers the authorize endpoint

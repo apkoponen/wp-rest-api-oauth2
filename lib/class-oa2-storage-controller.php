@@ -9,8 +9,6 @@ class OA2_Storage_Controller {
   /**
    * Checks to see if the given client is registered and will return true is found and false is not found.
    *
-   * @todo Once we have the structure in place we can finish writing this method
-   *
    * @param  string $client_id [description]
    * @return Bool          [description]
    */
@@ -26,8 +24,6 @@ class OA2_Storage_Controller {
 
    /**
    * Checks to see if the given client is registered and will return true is found and secret matches, false is not found.
-   *
-   * @todo Once we have the structure in place we can finish writing this method
    *
    * @param  string $client_id
    * @param  string $client_secret
