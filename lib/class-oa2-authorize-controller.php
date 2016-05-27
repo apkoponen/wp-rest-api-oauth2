@@ -3,7 +3,7 @@
 /**
  * Controller for the /authorize/ -endpoint
  */
-class OA2_Authorize_Controller extends OA2_Server {
+class OA2_Authorize_Controller {
 
   // Validate Request
   static function validate( WP_REST_Request $request ) {

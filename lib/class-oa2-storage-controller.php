@@ -4,7 +4,7 @@
  * 
  * This class is a simple storage class that utilizes $wpdb and WordPress's options API
  */
-class OA2_Storage_Controller extends OA2_Server {
+class OA2_Storage_Controller {
 
   /**
    * Checks to see if the given client is registered and will return true is found and false is not found.

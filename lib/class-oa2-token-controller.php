@@ -2,7 +2,7 @@
 /**
  * Controller for the /token/ -endpoint
  */
-class OA2_Token_Controller extends OA2_Server {
+class OA2_Token_Controller {
 
   // Validate Request
   static function validate ( WP_REST_Request $request ) {
