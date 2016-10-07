@@ -80,7 +80,7 @@ class OA2_Token_Controller {
 
 	  // Log the incident
 	  error_log(
-			  'Authorization code not found. Possibly a code replay.' .
+			  'Authorization code not found. Possibly a code reply.' .
 			  ' Code: ' . $request_code .
 			  ' Revoked access tokens: ' . print_r( $access_tokens, true ) .
 			  ' Revoked refresh tokens: ' . print_r( $refresh_tokens, true )
@@ -123,6 +123,8 @@ class OA2_Token_Controller {
 		"token_type" => "Bearer",
 		"refresh_token" => $refresh_token[ 'token' ]
 	);
+
+	wp_logout();
 
 	return new WP_REST_Response( $data );
   }
@@ -222,6 +224,8 @@ class OA2_Token_Controller {
 		"token_type" => "Bearer",
 		"refresh_token" => $new_refresh_token[ 'token' ]
 	);
+
+	wp_logout();
 
 	return new WP_REST_Response( $data );
   }
