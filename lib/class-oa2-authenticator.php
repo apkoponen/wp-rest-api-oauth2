@@ -34,14 +34,13 @@ class OA2_Authenticator {
    * @return WP_User|null|WP_Error Authenticated user on success, null if no OAuth data supplied, error otherwise
    */
   public function authenticate( $user ) {
-	if ( !empty( $user ) ) {
-	  return $user;
-	}
-
 	// Check if token is in request
 	$bearer_token = OA2_Header_Helper::get_authorization_bearer();
 	if ( empty( $bearer_token ) ) {
 	  $this->auth_status = $bearer_token;
+      if ( !empty( $user ) ) {
+        return $user;
+      }
 	  return null;
 	}
 

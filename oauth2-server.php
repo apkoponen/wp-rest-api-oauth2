@@ -39,7 +39,7 @@ require_once( dirname( __FILE__ ) . '/lib/class-oa2-storage-controller.php' );
 add_action( 'rest_api_init', array( 'OA2_Server', 'register_routes' ) );
 add_action( 'init', array( 'OA2_Server', 'register_storage' ) );
 add_filter( 'rest_index', array( 'OA2_Server', 'add_routes_to_index' ) );
-add_action( 'init', array( 'OA2_Server', 'init_autheticator' ) );
+add_action( 'plugins_loaded', array( 'OA2_Server', 'init_autheticator' ) );
 add_action( 'plugins_loaded', array( 'OA2_Server', 'load_textdomain' ) );
 add_action( 'init', array( 'OA2_Server', 'load_authorize_ui' ) );
 
