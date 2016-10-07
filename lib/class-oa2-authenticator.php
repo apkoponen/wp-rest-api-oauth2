@@ -10,7 +10,7 @@ class OA2_Authenticator {
 
   /**
    * Errors that occurred during authentication
-   * @var WP_Error|null|boolean True if succeeded, WP_Error if errored, null if not OAuth
+   * @var WP_Error|null|boolean True if succeeded, false if not OAuth, WP_Error if errored, null if not checked
    */
   protected $auth_status = null;
 
@@ -34,14 +34,14 @@ class OA2_Authenticator {
    * @return WP_User|null|WP_Error Authenticated user on success, null if no OAuth data supplied, error otherwise
    */
   public function authenticate( $user ) {
-	if ( !empty( $user ) ) {
+	if ( !empty( $user ) && $this->auth_status !== null) {
 	  return $user;
 	}
 
 	// Check if token is in request
 	$bearer_token = OA2_Header_Helper::get_authorization_bearer();
 	if ( empty( $bearer_token ) ) {
-	  $this->auth_status = $bearer_token;
+	  $this->auth_status = false;
 	  return null;
 	}
 
