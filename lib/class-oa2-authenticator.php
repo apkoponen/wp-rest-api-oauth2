@@ -42,7 +42,7 @@ class OA2_Authenticator {
 	$bearer_token = OA2_Header_Helper::get_authorization_bearer();
 	if ( empty( $bearer_token ) ) {
 	  $this->auth_status = false;
-	  return null;
+	  return $user;
 	}
 
 	// Fetch user by token key
